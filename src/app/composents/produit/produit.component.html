@@ -1,72 +1,187 @@
-<!-- Contenu principal -->
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>PRODUCTS</div>
-      <!-- Champ de recherche -->
-      <div class="input-group w-25">
-        <span class="input-group-text bg-light">
-          <i class="bi bi-search"></i>
-        </span>
-        <input type="text" class="form-control" placeholder="Rechercher..." />
-      </div>
-  
-      <!-- Boutons de filtre -->
-      <div class="btn-group">
-        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          Filter by
-        </button>
-        <ul class="dropdown-menu">
-          <li><a class="dropdown-item" href="#">Aliment</a></li>
-          <li><a class="dropdown-item" href="#">Medical</a></li>
-          <li><a class="dropdown-item" href="#">Informatique</a></li>
-          <li><a class="dropdown-item" href="#">Sports</a></li>
-          <li><a class="dropdown-item" href="#">Animal</a></li>
-        </ul>
-      </div>
-  
-      <!-- Bouton Ajouter -->
-      <button class="btn btn-success" (click)="showProductForm = true">
-        <i class="bi bi-plus-circle"></i> Create a product
-      </button>
+<div class="flex flex-col gap-8 p-8 h-full">
+  <div class="flex w-full justify-between items-center gap-4">
+    <p class="text-primary text-3xl font-bold">Products</p>
+    <!-- Champ de recherche -->
+    <div class="border rounded-full px-4 py-2 w-1/4">
+      <input
+        type="text"
+        class="border-none focus-within:outline-none w-full"
+        placeholder="Rechercher..."
+      />
     </div>
-    <app-product-form *ngIf="showProductForm"></app-product-form>
-    <!-- Tableau des produits -->
-    <table class="table table-dark table-hover text-center">
+
+    <!-- Boutons de filtre -->
+    <select
+      class="block px-4 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+    >
+      <option default value="1">Filter By</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+
+    <!-- Bouton Ajouter -->
+    <button
+      class="flex bg-green px-4 py-2 rounded gap-2 text-lg"
+      (click)="closeForm(true)"
+    >
+      <p>+</p>
+      <p>Add new Product</p>
+    </button>
+  </div>
+  <!-- Tableau des produits -->
+  <div class="flex flex-col bg-primary w-full rounded-xl text-white h-[90%] overflow-y-scroll">
+    <table class="overflow-y-auto">
       <thead>
         <tr>
-          <th>Nom</th>
+          <th>Produits</th>
           <th>Quantité</th>
           <th>Prix</th>
-          <th>Catégorie</th>
-          <th>Statut</th>
+          <th>Categorie</th>
+          <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Boucle des produits -->
-        <tr *ngFor="let product of products">
-            <td class="d-flex align-items-center">
-                <!-- Image avec bordures arrondies -->
-                <img [src]="product.image" alt="{{ product.name }}" class="img-thumbnail me-2 rounded-circle" width="50" height="50" />
-                <span>{{ product.name }}</span>
-              </td>
-          <td>{{ product.quantity }}</td>
-          <td>{{ product.price }} FCFA</td>
-          <td>{{ product.category }}</td>
+      <tbody class="h-[600px] overflow-y-scroll">
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
           <td>
-            <span
-              [class.text-success]="product.status === 'Suffisant'"
-              [class.text-danger]="product.status === 'Insuffisant'"
-            >
-              {{ product.status }}
-            </span>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
           </td>
           <td>
-            <button class="btn btn-success btn-sm me-1"><i class="bi bi-pencil-square"></i></button>
-            <button class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></button>
+            ...
           </td>
         </tr>
+        
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+        <tr>
+          <td class="flex items-center justify-center gap-3">
+            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
+            <p>Pomme</p>
+          </td>
+          <td>10</td>
+          <td>100$</td>
+          <td>Electronique</td>
+          <td>
+            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+          </td>
+          <td>
+            ...
+          </td>
+        </tr>
+
+        
       </tbody>
     </table>
-  </div>
-  
+</div>
+<app-product-form  *ngIf="showProductForm()" (closed)="closeForm(!$event)"></app-product-form>

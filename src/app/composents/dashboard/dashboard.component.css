@@ -1,27 +1,12 @@
-.bg-purple {
-    background-color: #2A0140;
-  }
-  
-  .bg-dark {
-    background-color: #1E1E1E;
-  }
-  
-  .text-white {
-    color: #FFFFFF;
-  }
-  
-  .table th, .table td {
-    color: #FFFFFF;
-    background-color: rgb(42, 3, 78);
-  }
-  
-  button.btn-success {
-    background-color: #00FF00;
-    color: #000;
-    font-weight: bold;
-  }
-  
-  button.btn-success:hover {
-    background-color: #00CC00;
-  }
-  
+th,td{
+  @apply text-center p-4 border
+}
+
+th{
+  @apply bg-secondary;
+}
+
+table{
+  @apply w-full;
+  overflow-x: auto;
+}

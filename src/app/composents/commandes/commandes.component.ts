@@ -13,6 +13,10 @@ export class CommandesComponent {
 
   showProductForm=false;
 
+  closeForm(bole: boolean) {
+
+  }
+
   commandes=[
     {
       id: 1001,

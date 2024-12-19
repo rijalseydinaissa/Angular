@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -8,39 +8,19 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   imports:[FormsModule,ReactiveFormsModule]
 })
 export class ProductFormComponent {
-  newProduct = {
-    name: '',
-    quantity: 0,
-    price: 0,
-    category: '',
-    status: 'Suffisant',
-    image: 'https://via.placeholder.com/50'
-  };
-
-  createProduct() {
-    console.log('Nouveau produit créé :', this.newProduct);
-    // Réinitialiser le formulaire
-    this.newProduct = {
-      name: '',
-      quantity: 0,
-      price: 0,
-      category: '',
-      status: 'Suffisant',
-      image: 'https://via.placeholder.com/50'
-    };
-  }
   
+  @Output() closed = new EventEmitter<boolean>();
+  close = signal(false);
 
-  onFileSelected(event: any) {
-  if (event.target.files.length > 0) {
-    this.newProduct.image = event.target.files[0];
+  handleClose() {
+    this.close.set(!this.close());
+    this.closed.emit(this.close());
   }
-}
 
-// createProduct() {
-//   // Logique de création de produit ici
-//   console.log(this.newProduct);
-//   this.showProductForm = false;
-// }
+  handleSubmit() {
+    console.log("helfkzl");
+    this.handleClose()
+  }
+
   
 }

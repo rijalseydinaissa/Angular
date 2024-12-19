@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ProductFormComponent } from '../product-form/product-form.component';
 
 @Component({
   selector: 'app-produit',
-  imports: [ReactiveFormsModule,CommonModule,ProductFormComponent,FormsModule,ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, ProductFormComponent, FormsModule, ReactiveFormsModule],
   templateUrl: './produit.component.html',
   styleUrl: './produit.component.css'
 })
 export class ProduitComponent {
 
-  showProductForm=false;
+  showProductForm= signal(false);
 
   products = [
     { name: 'Limon', quantity: 1000, price: 1000, category: 'Aliment', status: 'Suffisant', image: 'assets/images/limon.jpg' },
@@ -31,8 +31,9 @@ throw new Error('Method not implemented.');
 editProduct(_t29: any) {
 throw new Error('Method not implemented.');
 }
-closeForm() {
-  this.showProductForm = false;
+closeForm(event: boolean) {
+  this.showProductForm.set(event);
+  console.log("helfkzl");
 }
 // onFileSelected(event: any) {
 //   if (event.target.files.length > 0) {
