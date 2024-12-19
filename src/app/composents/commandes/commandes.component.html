@@ -1,6 +1,6 @@
 <div class="flex flex-col gap-8 p-8 h-full">
   <div class="flex w-full justify-between items-center gap-4">
-    <p class="text-primary text-3xl font-bold">Products</p>
+    <p class="text-primary text-3xl font-bold">Commandes</p>
     <!-- Champ de recherche -->
     <div class="border rounded-full px-4 py-2 w-1/4">
       <input
@@ -26,7 +26,12 @@
       (click)="closeForm(true)"
     >
       <p>+</p>
-      <p>Add new Product</p>
+      <p>Create new Commande</p>
     </button>
   </div>
+  <div
+    class="flex flex-col bg-primary w-full rounded-xl text-white h-[90%] overflow-y-scroll p-4"
+  >
+  <app-commande-card></app-commande-card>
+</div>
 </div>

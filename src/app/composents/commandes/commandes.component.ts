@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommandFormComponent } from '../command-form/command-form.component';
+import { CommandeCardComponent } from "./commande-card/commande-card.component";
 
 @Component({
   selector: 'app-commandes',
-  imports: [CommonModule,ReactiveFormsModule,CommandFormComponent],
+  imports: [CommonModule, ReactiveFormsModule, CommandFormComponent, CommandeCardComponent],
   templateUrl: './commandes.component.html',
   styleUrl: './commandes.component.css'
 })

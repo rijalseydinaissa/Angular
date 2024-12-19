@@ -1,0 +1,5 @@
+<div class="flex justify-between items-center w-full">
+    <img *ngIf="icon !== ''" class="font-bold w-6 h-6 rounded" src="{{icon}}"/>
+    <p *ngIf="icon === ''" class="font-bold">{{attribut}}</p>
+    <p>{{valeur}}</p>
+</div>
