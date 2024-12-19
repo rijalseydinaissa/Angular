@@ -1,0 +1,74 @@
+<div class="container-fluid p-3">
+    <!-- Section: Statistiques -->
+    <div class="row text-white text-center mb-4">
+      <!-- Commandes -->
+      <div class="col-md-4 mb-3">
+        <div class="p-3 bg-purple rounded">
+          <h5>Commandes</h5>
+          <h2>42.000</h2>
+          <img src="assets/commandes.png" alt="commandes" style="width: 50px;">
+        </div>
+      </div>
+      <!-- Ventes -->
+      <div class="col-md-4 mb-3">
+        <div class="p-3 bg-purple rounded">
+          <h5>Ventes</h5>
+          <h2>42.000</h2>
+          <img src="assets/ventes.png" alt="ventes" style="width: 50px;">
+        </div>
+      </div>
+      <!-- Revenues -->
+      <div class="col-md-4 mb-3">
+        <div class="p-3 bg-purple rounded">
+          <h5>Revenues</h5>
+          <h2>42.000</h2>
+          <img src="assets/revenues.png" alt="revenues" style="width: 50px;">
+        </div>
+      </div>
+    </div>
+  
+    <!-- Section: Ventes et Produits -->
+    <div class="row d-flex align-items-stretch">
+      <!-- Ventes Récentes -->
+      <div class="col-md-8 mb-3">
+        <div class="p-3 text-white rounded" style="background-color: #2A0140; height: 100%;">
+          <h5 class="fw-bold">Ventes Récentes</h5>
+          <table class="table table-dark table-hover">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Produit</th>
+                <th>Quantite</th>
+                <th>Prix unitaire</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let vente of ventes">
+                <td>{{ vente.date }}</td>
+                <td>{{ vente.produit }}</td>
+                <td>{{ vente.quantite }}</td>
+                <td>{{ vente.prix }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="btn btn-success float-end mb-3">Voir plus</button>
+        </div>
+      </div>
+  
+      <!-- Produits -->
+      <div class="col-md-4">
+        <div class="p-3 text-white rounded" style="background-color: #2A0140; height: 100%;">
+          <h5 class="fw-bold">Produits</h5>
+          <p class="text-success fw-bold">Plus Vendus :</p>
+          <ul>
+            <li *ngFor="let produit of produitsPlusVendus">{{ produit.nom }} - {{ produit.quantite }}</li>
+          </ul>
+          <p class="text-danger fw-bold">Rupture de stock :</p>
+          <ul>
+            <li *ngFor="let produit of produitsRupture">{{ produit.nom }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  

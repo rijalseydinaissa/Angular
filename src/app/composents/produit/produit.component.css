@@ -1,0 +1,96 @@
+/* Styles globaux */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #fff;
+  }
+  
+  /* Titre */
+  h2 {
+    color: #4b0082;
+  }
+  
+  /* Table Styles */
+  .table-dark th {
+    background-color: #2A0140 !important;
+    color: #fff !important;
+  }
+  
+  .table-dark td {
+    background-color: #2A0140;
+    color: #fff;
+  }
+  
+  .table-hover tbody tr:hover {
+    background-color: #370346 !important;
+  }
+  
+  /* Statut : Suffisant et Insuffisant */
+  .text-success {
+    color: #28a745 !important;
+    background-color: #28a745;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  .text-danger {
+    color: #dc3545 !important;
+    background-color: #dc3545;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  /* Boutons */
+  .btn-success {
+    background-color: #00cc44;
+    border: none;
+  }
+  
+  .btn-success:hover {
+    background-color: #00aa38;
+  }
+  
+  .btn-danger {
+    background-color: #dc3545;
+    border: none;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+  
+  .btn-primary {
+    background-color: #6f42c1;
+    border: none;
+  }
+  
+  .btn-primary:hover {
+    background-color: #5a32a3;
+  }
+  
+  /* Barre de recherche et filtre */
+  input.form-control {
+    border-radius: 20px;
+  }
+  
+  .dropdown-menu {
+    background-color: #fff;
+    color: #000;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f2f2f2;
+  }
+  
+  /* Bouton déconnexion */
+  .btn-logout {
+    background-color: #dc3545;
+    border: none;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .btn-logout:hover {
+    background-color: #b52b38;
+  }
+  

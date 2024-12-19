@@ -1,0 +1,69 @@
+<!-- commandes.component.html -->
+<div class="create-order-container">
+    <div class="order-form">
+      <h2>Create a Commande</h2>
+      
+      <div class="form-group">
+        <label>Client name</label>
+        <input type="text" [(ngModel)]="clientName" class="form-control">
+      </div>
+      
+      <div class="form-group">
+        <div class="product-selection">
+          <div class="label-group">
+            <label>Produit</label>
+            <span class="mandatory">M</span>
+          </div>
+          <select [(ngModel)]="selectedProduct" class="form-control">
+            <option value="">search a product</option>
+            <option *ngFor="let product of products" [ngValue]="product">
+              {{product.name}}
+            </option>
+          </select>
+        </div>
+        
+        <div class="quantity-input">
+          <label>Quantité</label>
+          <input type="number" [(ngModel)]="quantity" min="1" class="form-control">
+        </div>
+      </div>
+      
+      <div class="total-price">
+        Prix Total : {{getTotal()}} fr
+      </div>
+      
+      <button class="add-cart-btn" (click)="addToCart()">Add to cart</button>
+    </div>
+  
+    <div class="cart-preview">
+      <h3>Client : {{clientName}}</h3>
+      
+      <div class="cart-items">
+        <div *ngFor="let item of cartItems; let i = index" class="cart-item">
+          <div class="product-image">
+            <img [src]="item.product.image" alt="product">
+          </div>
+          <div class="product-info">
+            <h4>{{item.product.name}}</h4>
+            <div class="quantity-controls">
+              <button class="qty-btn">-</button>
+              <span>{{item.quantity}}</span>
+              <button class="qty-btn">+</button>
+            </div>
+          </div>
+          <div class="item-price">
+            {{item.total}} Fr
+          </div>
+          <button class="remove-btn" (click)="removeFromCart(i)">✕</button>
+        </div>
+      </div>
+  
+      <div class="cart-total">
+        Total : {{getTotal()}} fr
+      </div>
+      
+      <button class="validate-btn" (click)="validateOrder()">
+        Valider commande
+      </button>
+    </div>
+  </div>

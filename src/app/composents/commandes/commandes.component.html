@@ -1,0 +1,59 @@
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="h4">Commandes</div>
+      <div class="input-group w-25">
+        <span class="input-group-text bg-light">
+          <i class="bi bi-search"></i>
+        </span>
+        <input type="text" class="form-control" placeholder="Rechercher..." />
+      </div>
+      <div class="btn-group">
+        <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Filter by
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#">Non réglée</a></li>
+          <li><a class="dropdown-item" href="#">Réglée</a></li>
+        </ul>
+      </div>
+      <button class="btn btn-success" (click)="showProductForm =true">
+        <i class="bi bi-plus-circle"></i> Create a commandes
+      </button>
+      <app-command-form *ngIf="showProductForm"></app-command-form>
+    </div>
+    <div class="row" style="background-color: rgb(42, 3, 78);">
+      <div class="col-md-3 mb-4 mt-4" *ngFor="let commande of commandes">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <h5 class="card-title">Commande n {{ commande.id }}</h5>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>A :</strong>
+              <span>{{ commande.client }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>Date :</strong>
+              <span>{{ commande.date }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>nombre de produits :</strong>
+              <span>{{ commande.nombreProduits }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>Status :</strong>
+              <span [class]="commande.status === 'Réglée' ? 'badge bg-success' : 'badge bg-danger'">
+                {{ commande.status }}
+              </span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <strong>Total :</strong>
+              <span>{{ commande.total }} Fr</span>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-sm btn-success" *ngIf="commande.status === 'Non réglée'">Valider</button>
+              <button class="btn btn-sm btn-primary">Détail</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

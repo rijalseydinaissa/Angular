@@ -1,0 +1,15 @@
+.nav-link {
+    margin-right: 100px;
+}
+
+.nav-link.active {
+    font-weight: bold;
+    background-color: #9461c3;
+    border-radius: 5px;
+    margin-left: 10px;
+}
+
+.btn {
+    border-radius: 5px;
+    font-weight: bold;
+}
