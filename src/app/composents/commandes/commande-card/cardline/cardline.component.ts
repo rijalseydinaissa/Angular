@@ -11,4 +11,5 @@ export class CardlineComponent {
   @Input() attribut: string = '';
   @Input() valeur: string = '';
   @Input() icon: string = '';
+  @Input() color: string = '';
 }
