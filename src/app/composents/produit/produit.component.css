@@ -1,0 +1,7 @@
+td,th{
+  @apply px-4 py-3 text-center
+}
+
+tr{
+  @apply border-b
+}

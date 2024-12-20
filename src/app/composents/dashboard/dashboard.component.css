@@ -1,0 +1,12 @@
+th,td{
+  @apply text-center p-4 border
+}
+
+th{
+  @apply bg-secondary;
+}
+
+table{
+  @apply w-full;
+  overflow-x: auto;
+}

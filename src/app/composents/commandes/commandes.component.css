@@ -1,0 +1,26 @@
+/* Couleurs de la capture d'écran */
+:root {
+    --color-primary: #491b7c;
+    --color-success: #28a745;
+    --color-danger: #dc3545;
+  }
+  
+  /* .btn-success {
+    background-color: var(--color-success);
+    border-color: var(--color-success);
+  } */
+/*   
+  .btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+  } */
+  
+  .badge-success {
+    background-color: var(--color-success);
+    color: #fff;
+  }
+  
+  .badge-danger {
+    background-color: var(--color-danger);
+    color: #fff;
+  }

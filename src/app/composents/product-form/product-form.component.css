@@ -1,0 +1,15 @@
+label{
+  @apply text-lg font-bold
+}
+
+.input-group{
+  @apply flex flex-col gap-1
+}
+
+.input-flex{
+  @apply flex justify-between
+}
+
+input{
+  @apply border-none focus-within:outline-none p-1.5 rounded text-primary
+}
