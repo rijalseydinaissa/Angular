@@ -11,24 +11,33 @@ import { StatsCardComponent } from "./stats-card/stats-card.component";
 })
 export class DashboardComponent {
   // Ventes récentes
-  ventes = [
-    { date: '12/01/2025', produit: 'Chaise anglaise', quantite: 10, prix: 15000 },
-    { date: '12/01/2025', produit: 'Chaise anglaise', quantite: 10, prix: 15000 },
-    { date: '12/01/2025', produit: 'Chaise anglaise', quantite: 10, prix: 15000 },
-    { date: '12/01/2025', produit: 'Chaise anglaise', quantite: 10, prix: 15000 },
-    { date: '12/01/2025', produit: 'Chaise anglaise', quantite: 10, prix: 15000 }
-  ];
+ // Ventes récentes
+ ventes = [
+  { date: '12/01/2025', produit: 'Pomme', quantite: 14, prixUnitaire: '250 fr' },
+  { date: '13/01/2025', produit: 'Banane', quantite: 20, prixUnitaire: '200 fr' },
+  { date: '14/01/2025', produit: 'Orange', quantite: 30, prixUnitaire: '300 fr' },
+  { date: '14/01/2025', produit: 'Orange', quantite: 30, prixUnitaire: '300 fr' },
+  { date: '14/01/2025', produit: 'Orange', quantite: 30, prixUnitaire: '300 fr' },
+  { date: '14/01/2025', produit: 'Orange', quantite: 30, prixUnitaire: '300 fr' },
+  { date: '14/01/2025', produit: 'Orange', quantite: 30, prixUnitaire: '300 fr' },
+];
 
-  // Produits
-  produitsPlusVendus = [
-    { nom: 'Papier peint', quantite: 1000 },
-    { nom: 'Bois', quantite: 1000 },
-    { nom: 'Ordinateur', quantite: 1000 }
-  ];
+// Produits les plus vendus
+plusVendues = [
+  { produit: "Pomme d'Adam", quantite: 100000 },
+  { produit: 'Banane', quantite: 50000 },
+  { produit: 'Orange', quantite: 30000 },
+  { produit: 'Orange', quantite: 30000 },
+  { produit: 'Orange', quantite: 30000 },
+];
 
-  produitsRupture = [
-    { nom: 'Papier peint' },
-    { nom: 'Peinture' },
-    { nom: 'Papier toilette' }
-  ];
+// Produits bientôt terminés
+bientotTermine = [
+  { produit: "Pomme d'Adam", quantite: 5 },
+  { produit: 'Banane', quantite: 3 },
+  { produit: 'Orange', quantite: 2 },
+  { produit: 'Orange', quantite: 2 },
+  { produit: 'Orange', quantite: 2 },
+];
+
 }

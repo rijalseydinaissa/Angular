@@ -5,6 +5,8 @@
     <div class="border rounded-full px-4 py-2 w-1/4">
       <input
         type="text"
+        [(ngModel)]="searchTerm"
+        (input)="filterProducts()"
         class="border-none focus-within:outline-none w-full"
         placeholder="Rechercher..."
       />
@@ -12,12 +14,14 @@
 
     <!-- Boutons de filtre -->
     <select
+      [(ngModel)]="selectedFilter"
+      (change)="filterProducts()"
       class="block px-4 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
     >
-      <option default value="1">Filter By</option>
-      <option value="1">Option 1</option>
-      <option value="2">Option 2</option>
-      <option value="3">Option 3</option>
+      <option value="all">Tous les produits</option>
+      <option value="Electronique">Electronique</option>
+      <option value="Alimentaire">Alimentaire</option>
+      <option value="Informatique">Informatique</option>
     </select>
 
     <!-- Bouton Ajouter -->
@@ -29,9 +33,10 @@
       <p>Add new Product</p>
     </button>
   </div>
+
   <!-- Tableau des produits -->
   <div class="flex flex-col bg-primary w-full rounded-xl text-white h-[90%] overflow-y-scroll">
-    <table class="overflow-y-auto">
+    <table class="overflow-y-auto w-full">
       <thead>
         <tr>
           <th>Produits</th>
@@ -42,146 +47,33 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody class="h-[600px] overflow-y-scroll">
-        <tr>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts">
           <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
+            <img [src]="product.image" alt="" class="w-12 h-12 rounded" />
+            <p>{{ product.nom }}</p>
           </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
+          <td>{{ product.quantite }}</td>
+          <td>{{ product.prix }}</td>
+          <td>{{ product.categorie }}</td>
           <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
+            <p
+              class="p-2 rounded font-bold text-lg"
+              [ngClass]="product.statutClass"
+            >
+              {{ product.statut }}
+            </p>
           </td>
-          <td>
-            ...
+          <td class="text-center">
+            <!-- Trois points pour les actions -->
+            <span class="text-xl cursor-pointer">...</span>
           </td>
         </tr>
-        
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-        <tr>
-          <td class="flex items-center justify-center gap-3">
-            <img src="https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png" alt="" class="w-12 h-12 rounded">
-            <p>Pomme</p>
-          </td>
-          <td>10</td>
-          <td>100$</td>
-          <td>Electronique</td>
-          <td>
-            <p class="bg-green p-2 rounded font-bold text-lg">Suffisant</p>
-          </td>
-          <td>
-            ...
-          </td>
-        </tr>
-
-        
       </tbody>
     </table>
+  </div>
+  <app-product-form
+    *ngIf="showProductForm()"
+    (closed)="closeForm(!$event)"
+  ></app-product-form>
 </div>
-<app-product-form  *ngIf="showProductForm()" (closed)="closeForm(!$event)"></app-product-form>
