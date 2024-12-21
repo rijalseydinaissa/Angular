@@ -1,17 +1,32 @@
-import { CommonModule } from '@angular/common';
 import { Component, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from '../product-form/product-form.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-produit',
-  imports: [ReactiveFormsModule, CommonModule, ProductFormComponent, FormsModule, ReactiveFormsModule],
+  imports: [ CommonModule,FormsModule,ProductFormComponent],
   templateUrl: './produit.component.html',
-  styleUrl: './produit.component.css'
+  styleUrls: ['./produit.component.css'],
 })
-export class ProduitComponent {
+export class ProduitComponent { 
+  showProductForm = signal(false);
 
-  showProductForm= signal(false);
+  searchTerm: string = '';
+  selectedFilter: string = 'all';
+
+  filteredProducts: {
+    id: number;
+    image: string;
+    nom: string;
+    quantite: number;
+    prix: number;
+    categorie: string;
+    statut: string;
+    statutClass: string;
+  }[] = [];
 
   products = [
     {
@@ -29,11 +44,11 @@ export class ProduitComponent {
       statutClass: 'bg-green'
     },
     {
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Informatique',
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Mango',quantite: 10,prix: 100,categorie: 'Informatique',
       statut: 'Suffisant',
       statutClass: 'bg-green'
     },{
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Matelas',quantite: 10,prix: 100,categorie: 'Electronique',
       statut: 'Suffisant',
       statutClass: 'bg-green'
     },
@@ -43,32 +58,39 @@ export class ProduitComponent {
       statutClass: 'bg-green'
     },
     {
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Chaise',quantite: 10,prix: 100,categorie: 'Electronique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },
+    {
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Chaise',quantite: 10,prix: 100,categorie: 'Electronique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },{
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Chaise',quantite: 10,prix: 100,categorie: 'Electronique',
       statut: 'Suffisant',
       statutClass: 'bg-green'
     },
   ];
   
-  
-deleteProduct(_t29: any) {
-throw new Error('Method not implemented.');
-}
-editProduct(_t29: any) {
-throw new Error('Method not implemented.');
-}
-closeForm(event: boolean) {
-  this.showProductForm.set(event);
-  console.log("helfkzl");
-}
-// onFileSelected(event: any) {
-//   if (event.target.files.length > 0) {
-//     this.newProduct.image = event.target.files[0];
-//   }
-// }
 
-// createProduct() {
-//   // Logique de création de produit ici
-//   console.log(this.newProduct);
-//   this.showProductForm = false;
-// }
+  constructor() {
+    this.filteredProducts = this.products; // Initialiser avec tous les produits
+  }
+
+  filterProducts() {
+    const searchLower = this.searchTerm.toLowerCase();
+
+    this.filteredProducts = this.products.filter((product) => {
+      const WeurPro = product.nom.toLowerCase().includes(searchLower);
+      const matchesCategory =
+        this.selectedFilter === 'all' || product.categorie === this.selectedFilter;
+
+      return WeurPro && matchesCategory;
+    });
+  }
+
+  closeForm(event: boolean) {
+    this.showProductForm.set(event);
+  }
 }
