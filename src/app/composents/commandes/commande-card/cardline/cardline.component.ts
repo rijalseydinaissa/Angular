@@ -9,7 +9,7 @@ import { Component, Input } from '@angular/core';
 })
 export class CardlineComponent {
   @Input() attribut: string = '';
-  @Input() valeur: string = '';
+  @Input() valeur: string | number = '';
   @Input() icon: string = '';
   @Input() color: string = '';
 }

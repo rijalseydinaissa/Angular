@@ -34,54 +34,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
+            <tr *ngFor="let vente of ventes">
+              <td>{{vente.date}}</td>
+              <td>{{vente.produit}}</td>
+              <td>{{vente.quantite}}</td>
+              <td>{{vente.prixUnitaire}}</td>
             </tr>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
-            </tr>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
-            </tr>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
-            </tr>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
-            </tr>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
-            </tr>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
-            </tr>
-            <tr>
-              <td>12/01/2025</td>
-              <td>Pomme</td>
-              <td>14</td>
-              <td>250 fr</td>
-            </tr>
+            
           </tbody>
         </table>
       </div>
@@ -95,48 +54,16 @@
       <h1 class="text-3xl font-bold text-center">Produits</h1>
       <div class="flex flex-col gap-4">
         <h3 class="text-xl font-bold text-green">Les plus vendues</h3>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
+        <div *ngFor="let produits of plusVendues" class="flex justify-between items-center">
+          <p>{{produits.produit}}</p>
+          <p>{{produits.quantite}}</p>
         </div>
       </div>
       <div class="flex flex-col gap-4">
         <h3 class="text-xl font-bold text-red">Bientot terminee</h3>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
-        </div>
-        <div class="flex justify-between items-center">
-          <p>Pomme d'adan</p>
-          <p>100000</p>
+        <div *ngFor="let termine of bientotTermine " class="flex justify-between items-center">
+          <p>{{termine.produit}}</p>
+          <p>{{termine.quantite}}</p>
         </div>
       </div>
     </div>

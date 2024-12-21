@@ -14,14 +14,39 @@ export class ProduitComponent {
   showProductForm= signal(false);
 
   products = [
-    { name: 'Limon', quantity: 1000, price: 1000, category: 'Aliment', status: 'Suffisant', image: 'assets/images/limon.jpg' },
-    { name: 'Bandage', quantity: 10, price: 1000, category: 'Médical', status: 'Insuffisant', image: 'assets/images/bandage.jpg' },
-    { name: 'Toast', quantity: 1000, price: 1000, category: 'Aliment', status: 'Suffisant', image: 'assets/images/toast.jpg' },
-    { name: 'Ball', quantity: 1000, price: 1000, category: 'Sports', status: 'Suffisant', image: 'assets/images/ball.jpg' },
-    { name: 'Clavier', quantity: 10, price: 1000, category: 'Informatique', status: 'Insuffisant', image: 'assets/images/clavier.jpg' },
-    { name: 'Ordinateur', quantity: 10, price: 1000, category: 'Informatique', status: 'Insuffisant', image: 'assets/images/ordinateur.jpg' },
-    { name: 'Chat', quantity: 1000, price: 1000, category: 'Animal', status: 'Suffisant', image: 'assets/images/chat.jpg' },
-    { name: 'Chiken', quantity: 10, price: 1000, category: 'Aliment', status: 'Insuffisant', image: 'assets/images/chicken.jpg' },
+    {
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },
+    {
+      id: 2,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 100,prix: 100,categorie: 'Alimentaire',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },{
+      id: 3,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 200,prix: 100,categorie: 'Electronique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },
+    {
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Informatique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },{
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },
+    {
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },
+    {
+      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
+      statut: 'Suffisant',
+      statutClass: 'bg-green'
+    },
   ];
   
   
