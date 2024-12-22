@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
@@ -15,6 +15,12 @@ export class CommandFormComponent {
   selectedProduct: any = null;
   quantity: number = 1;
   cartItems: any[] = [];
+
+  @Output() closed = new EventEmitter<boolean>();
+
+  close() {
+    this.closed.emit(false);
+  }
   
   // Données simulées des produits
   products = [

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, Signal, signal } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -16,6 +16,10 @@ export class ProduitComponent {
 
   searchTerm: string = '';
   selectedFilter: string = 'all';
+
+  currentProduct : Signal<number> = signal(-1);
+  action : boolean = false;
+  
 
   filteredProducts: {
     id: number;
