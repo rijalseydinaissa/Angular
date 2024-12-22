@@ -12,11 +12,11 @@ import { CommandeCardComponent } from "./commande-card/commande-card.component";
 })
 export class CommandesComponent {
 
-  showProductForm= signal(false);
+  showProductForm = signal(false);
 
-  closeForm(bole: boolean) {
-
-  }
+  handleForm(bole: boolean) {
+    this.showProductForm.set(bole);
+  } 
 
   commandes=[
     {

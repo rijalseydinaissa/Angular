@@ -23,7 +23,7 @@
     <!-- Bouton Ajouter -->
     <button
       class="flex bg-green px-4 py-2 rounded gap-2 text-lg"
-      (click)="closeForm(true)"
+      (click)="handleForm(true)"
     >
       <p>+</p>
       <p>Create new Commande</p>
@@ -43,4 +43,9 @@
 
 </div>
 </div>
-<app-command-form  *ngIf="showProductForm()"></app-command-form>
+<app-command-form (closed)="handleForm($event)"
+  class="absolute inset-0 transform transition-transform bg-black/75 flex items-center justify-end duration-300 text-white"
+  [class.translate-x-0]="showProductForm()"
+  [class.translate-x-full]="!showProductForm()"
+  >
+</app-command-form>
