@@ -1,51 +1,57 @@
 <div class="flex flex-col gap-8 p-8 h-full">
-  <div class="flex w-full justify-between items-center gap-4">
-    <p class="text-primary text-3xl font-bold">Commandes</p>
-    <!-- Champ de recherche -->
-    <div class="border rounded-full px-4 py-2 w-1/4">
+
+    <div class="flex w-full justify-between items-center gap-4">
+      <p class="text-primary text-3xl font-bold">Commandes</p>
+  
+      <!-- Champ de recherche par client -->
+      <div class="border rounded-full px-4 py-2 w-1/4">
+        <input
+          type="text"
+          class="border-none focus-within:outline-none w-full"
+          placeholder="Rechercher par client..."
+          [(ngModel)]="searchClient"
+          (input)="filterCommandes()"
+        />
+      </div>
+  
+      <!-- Champ de filtre par date -->
       <input
-        type="text"
-        class="border-none focus-within:outline-none w-full"
-        placeholder="Rechercher..."
+        type="date"
+        class="border px-4 py-2 rounded-md"
+        [(ngModel)]="filterDate"
+        (change)="filterCommandes()"
       />
+  
+      <!-- Bouton Ajouter -->
+      <button
+        class="flex bg-green px-4 py-2 rounded gap-2 text-lg"
+        (click)="handleForm(true)"
+      >
+        <p>+</p>
+        <p>Create new Commande</p>
+      </button>
     </div>
-
-    <!-- Boutons de filtre -->
-    <select
-      class="block px-4 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+  
+    <div
+      class="flex flex-wrap justify-around items-center bg-primary w-full rounded-xl text-white h-[90%] max-h-[720px] overflow-y-scroll p-4 gap-4"
     >
-      <option default value="1">Filter By</option>
-      <option value="1">Option 1</option>
-      <option value="2">Option 2</option>
-      <option value="3">Option 3</option>
-    </select>
-
-    <!-- Bouton Ajouter -->
-    <button
-      class="flex bg-green px-4 py-2 rounded gap-2 text-lg"
-      (click)="handleForm(true)"
-    >
-      <p>+</p>
-      <p>Create new Commande</p>
-    </button>
+      <app-commande-card
+        *ngFor="let commande of filteredCommandes"
+        [client]="commande.client"
+        [nombreProduits]="commande.nombreProduits"
+        [date]="commande.date"
+        [status]="commande.status"
+        [total]="commande.total"
+      >
+      </app-commande-card>
+    </div>
   </div>
-  <div
-    class="flex flex-wrap justify-around items-center bg-primary w-full rounded-xl text-white h-[90%] max-h-[720px] overflow-y-scroll p-4 gap-4"
+  
+  <app-command-form
+    (closed)="handleForm($event)"
+    class="absolute inset-0 transform transition-transform bg-black/75 flex items-center justify-end duration-300 text-white"
+    [class.translate-x-0]="showProductForm()"
+    [class.translate-x-full]="!showProductForm()"
   >
-  <app-commande-card *ngFor="let commande of commandes"
-  [client]="commande.client"
-  [nombreProduits]="commande.nombreProduits"
-  [date]="commande.date"
-  [status]="commande.status"
-  [total]="commande.total"
-  >
-  </app-commande-card>
-
-</div>
-</div>
-<app-command-form (closed)="handleForm($event)"
-  class="absolute inset-0 transform transition-transform bg-black/75 flex items-center justify-end duration-300 text-white"
-  [class.translate-x-0]="showProductForm()"
-  [class.translate-x-full]="!showProductForm()"
-  >
-</app-command-form>
+  </app-command-form>
+  

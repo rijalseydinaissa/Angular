@@ -10,7 +10,12 @@ import { StatsCardComponent } from "./stats-card/stats-card.component";
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent {
-  // Ventes récentes
+  
+  stats = [
+    { title: 'Commandes', value: '42.000', icon: 'commandes.png' },
+    { title: 'Ventes', value: '24.000', icon: 'ventes.png' },
+    { title: 'Revenues', value: '15.000', icon: 'revenues.png' },
+  ];
  // Ventes récentes
  ventes = [
   { date: '12/01/2025', produit: 'Pomme', quantite: 14, prixUnitaire: '250 fr' },

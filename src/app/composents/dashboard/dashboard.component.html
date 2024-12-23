@@ -1,22 +1,11 @@
 <div class="p-8 flex flex-col gap-8 h-full">
   <div class="flex items-center justify-between w-full h-full">
     <app-stats-card
+      *ngFor="let stat of stats"
       class="w-1/4"
-      title="Commandes"
-      value="42.000"
-      icon="commandes.png"
-    ></app-stats-card>
-    <app-stats-card
-      class="w-1/4"
-      title="Ventes"
-      value="42.000"
-      icon="commandes.png"
-    ></app-stats-card>
-    <app-stats-card
-      class="w-1/4"
-      title="Revenues"
-      value="42.000"
-      icon="commandes.png"
+      [title]="stat.title"
+      [value]="stat.value"
+      [icon]="stat.icon"
     ></app-stats-card>
   </div>
 
