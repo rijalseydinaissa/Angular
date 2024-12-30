@@ -1,9 +1,23 @@
+import { ProduitService } from './../../services/produit.service';
 import { Component, Signal, signal } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { CommonModule } from '@angular/common';
+import { OnInit } from '@angular/core';
+
+interface Product {
+  id: number;
+  image: string;
+  nom: string;
+  quantite: number;
+  prix: number;
+  categorie: string;
+  statut: string;
+  statutClass: string;
+}
+
 
 @Component({
   selector: 'app-produit',
@@ -11,76 +25,39 @@ import { CommonModule } from '@angular/common';
   templateUrl: './produit.component.html',
   styleUrls: ['./produit.component.css'],
 })
-export class ProduitComponent { 
-  showProductForm = signal(false);
 
+export class ProduitComponent implements OnInit { 
+  showProductForm = signal(false);
+  
   searchTerm: string = '';
   selectedFilter: string = 'all';
 
   currentProduct : Signal<number> = signal(-1);
   action : boolean = false;
   
-
-  filteredProducts: {
-    id: number;
-    image: string;
-    nom: string;
-    quantite: number;
-    prix: number;
-    categorie: string;
-    statut: string;
-    statutClass: string;
-  }[] = [];
-
-  products = [
-    {
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },
-    {
-      id: 2,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 100,prix: 100,categorie: 'Alimentaire',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },{
-      id: 3,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 200,prix: 100,categorie: 'Electronique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },
-    {
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Mango',quantite: 10,prix: 100,categorie: 'Informatique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },{
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Matelas',quantite: 10,prix: 100,categorie: 'Electronique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },
-    {
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Pomme',quantite: 10,prix: 100,categorie: 'Electronique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },
-    {
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Chaise',quantite: 10,prix: 100,categorie: 'Electronique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },
-    {
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Chaise',quantite: 10,prix: 100,categorie: 'Electronique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },{
-      id: 1,image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png',nom: 'Chaise',quantite: 10,prix: 100,categorie: 'Electronique',
-      statut: 'Suffisant',
-      statutClass: 'bg-green'
-    },
-  ];
   
 
-  constructor() {
-    this.filteredProducts = this.products; // Initialiser avec tous les produits
+  filteredProducts:Product []=[];
+
+  products :Product []=[];
+  categories: string[] = [];
+
+  ngOnInit(): void {
+      this.produitService.getProducts().subscribe(
+        {
+          next:(data)=>{
+            this.products = data;
+            this.filteredProducts = this.products; // Initialiser avec tous les produits
+
+            this.categories = Array.from(
+              new Set(this.products.map((product) => product.categorie))
+            );
+          }
+        }
+      )
   }
+
+  constructor(private produitService:ProduitService) {  }
 
   filterProducts() {
     const searchLower = this.searchTerm.toLowerCase();
@@ -93,6 +70,7 @@ export class ProduitComponent {
       return WeurPro && matchesCategory;
     });
   }
+
 
   closeForm(event: boolean) {
     this.showProductForm.set(event);

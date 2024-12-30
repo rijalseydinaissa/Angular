@@ -112,7 +112,6 @@ export class CommandesComponent {
       status: 'Réglée',
     }
   ];
-
   searchClient: string = '';
   filterDate: string = '';
   filteredCommandes = [...this.commandes];
@@ -132,7 +131,6 @@ export class CommandesComponent {
     });
   }
   private formatDate(dateStr: string): string {
-    // Convertit le format "DD/MM/YYYY" en "YYYY-MM-DD" pour correspondre au format de l'input date
     const [day, month, year] = dateStr.split('/');
     return `${year}-${month}-${day}`;
   }
