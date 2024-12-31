@@ -4,10 +4,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommandFormComponent } from '../command-form/command-form.component';
 import { CommandeCardComponent } from './commande-card/commande-card.component';
 import { CommandeService } from '../../services/commande.service';
+import { CommandeDetailComponent } from './commande-detail/commande-detail.component';
 
 @Component({
   selector: 'app-commandes',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, CommandFormComponent, CommandeCardComponent],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, CommandFormComponent, CommandeCardComponent,CommandeDetailComponent],
   templateUrl: './commandes.component.html',
   styleUrls: ['./commandes.component.css']
 })
