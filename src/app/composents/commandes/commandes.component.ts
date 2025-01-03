@@ -18,6 +18,19 @@ export class CommandesComponent implements OnInit {
   filteredCommandes: any[] = [];
   searchClient: string = '';
   filterDate: string = '';
+  commande = signal({client:"",date:"",montantTotal:0,commandeProduits:Array,status:"",id:0});
+  showDetail = signal<boolean>(true);
+
+  setCommande(commande: any) {
+    this.commande.set(commande);
+  }
+
+  showDetailModal(commande: any) {
+    
+    this.setCommande(commande);
+    this.showDetail.set(!this.showDetail()); 
+    console.log(commande);
+  }
 
   constructor(private commandeService:CommandeService){}
   // Commandes initiales

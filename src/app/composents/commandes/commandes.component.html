@@ -42,6 +42,8 @@
       [date]="commande.date"
       [status]="commande.status"
       [total]="commande.montantTotal"
+
+      (openDetail)="showDetailModal(commande)"
     >
       <div class="text-sm text-gray-300">
         <p>Nombre de produits : {{ commande.nombreProduits }}</p>
@@ -50,7 +52,7 @@
     </div>
   </div>
 
-  <app-commande-detail></app-commande-detail>
+  <app-commande-detail (close)="showDetailModal(commande)" [closed]="showDetail()" [nom]="commande().client" prenom="" [currentTotal]="commande().montantTotal" [cartTotal]="commande().montantTotal" [cartItems]="commande().commandeProduits" [status]="commande().status"></app-commande-detail>
   <app-command-form
     (closed)="handleForm($event)"
     class="absolute inset-0 transform transition-transform bg-black/75 flex items-center justify-end duration-300 text-white"

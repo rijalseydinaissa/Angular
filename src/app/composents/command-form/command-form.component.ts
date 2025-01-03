@@ -1,12 +1,18 @@
 import { CommandeService } from './../../services/commande.service';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output,OnInit } from '@angular/core';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  FormGroup,
+  FormBuilder,
+  Validators,
+} from '@angular/forms';
 
 interface Product {
   id: number;
-  name: string;
-  price: number;
+  nom: string;
+  prix: number;
   image: string;
 }
 
@@ -20,11 +26,11 @@ interface CartItem {
   standalone: true,
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
   templateUrl: './command-form.component.html',
-  styleUrl: './command-form.component.css'
+  styleUrl: './command-form.component.css',
 })
 export class CommandFormComponent implements OnInit {
   @Output() closed = new EventEmitter<boolean>();
-  
+
   // products: Product[] = [
   //   { id: 1, name: 'Pomme de terre', price: 24000, image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png' },
   //   { id: 2, name: 'Carotte', price: 15000, image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png' },
@@ -34,12 +40,15 @@ export class CommandFormComponent implements OnInit {
   commandeForm: FormGroup;
   cartItems: CartItem[] = [];
   currentTotal: number = 0;
-  
-  constructor(private fb: FormBuilder, private commandeService:CommandeService) {
+
+  constructor(
+    private fb: FormBuilder,
+    private commandeService: CommandeService
+  ) {
     this.commandeForm = this.fb.group({
       clientName: ['', Validators.required],
       productId: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]]
+      quantity: [1, [Validators.required, Validators.min(1)]],
     });
   }
   ngOnInit() {
@@ -49,6 +58,8 @@ export class CommandFormComponent implements OnInit {
   private loadProduits() {
     this.commandeService.getProduits().subscribe({
       next: (produits) => {
+        console.log(produits);
+
         this.products = produits;
       },
       error: (err) => {
@@ -62,17 +73,19 @@ export class CommandFormComponent implements OnInit {
   }
 
   get cartTotal() {
-    return this.cartItems.reduce((total, item) => 
-      total + (item.product.price * item.quantity), 0);
+    return this.cartItems.reduce(
+      (total, item) => total + item.product.prix * item.quantity,
+      0
+    );
   }
   updateTotalPrice() {
     const productId = this.commandeForm.get('productId')?.value;
     const quantity = this.commandeForm.get('quantity')?.value;
-    
+
     if (productId && quantity) {
-      const product = this.products.find(p => p.id === Number(productId));
+      const product = this.products.find((p) => p.id === Number(productId));
       if (product) {
-        this.currentTotal = product.price * quantity;
+        this.currentTotal = product.prix * quantity;
       }
     } else {
       this.currentTotal = 0;
@@ -83,11 +96,12 @@ export class CommandFormComponent implements OnInit {
     if (this.commandeForm.valid) {
       const productId = Number(this.commandeForm.get('productId')?.value);
       const quantity = Number(this.commandeForm.get('quantity')?.value);
-      const product = this.products.find(p => p.id === productId);
-      
+      const product = this.products.find((p) => p.id === productId);
+
       if (product) {
-        const existingItem = this.cartItems.find(item => 
-          item.product.id === product.id);
+        const existingItem = this.cartItems.find(
+          (item) => item.product.id === product.id
+        );
 
         if (existingItem) {
           existingItem.quantity += quantity;
@@ -95,7 +109,6 @@ export class CommandFormComponent implements OnInit {
           this.cartItems.push({ product, quantity });
         }
 
-    
         this.currentTotal = 0;
       }
     }
@@ -125,10 +138,27 @@ export class CommandFormComponent implements OnInit {
   //     this.close();
   //   }
   // }
- 
+
   handleSubmit() {
     if (this.commandeForm.valid) {
-      const commande = this.commandeForm.value;
+      const commande = {
+        date: new Date(),
+        status: 'NONREGLE',
+        client: this.clientName,
+        produits: this.cartItems.map((item) => {
+          console.log({
+            produitId: item.product.id,
+            quantite: item.quantity,
+          });
+
+          const product = {
+            produitId: item.product.id,
+            quantite: item.quantity,
+          };
+
+          return product;
+        }),
+      };
       console.log('Commande envoyée:', commande);
       this.commandeService.createCommande(commande).subscribe({
         next: (response) => {
@@ -141,7 +171,7 @@ export class CommandFormComponent implements OnInit {
       });
     }
   }
-    
+
   close() {
     this.closed.emit(false);
   }

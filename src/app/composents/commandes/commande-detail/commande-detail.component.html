@@ -1,7 +1,7 @@
 <div
     class="absolute inset-0 bg-gray-800 bg-opacity-90 flex items-center justify-center text-white"
     (click)="closeOverlay()"
-    [ngClass] = "closed() ? 'hidden' : ''"
+    [ngClass] = "closed == true ? 'hidden' : ''"
 >
     <div
         class="bg-white text-gray-800 rounded-lg shadow-2xl w-3/4 h-5/6 overflow-hidden flex"
@@ -18,9 +18,6 @@
                         <p class="font-semibold">
                             Nom: <span class="font-normal">{{ nom }}</span>
                         </p>
-                        <p class="font-semibold">
-                            Prenom: <span class="font-normal">{{ prenom }}</span>
-                        </p>
                     </div>
                 </div>
                 <hr class="my-4">
@@ -28,7 +25,7 @@
                     <p class="font-semibold">Produit</p>
                     <div class="ml-4 flex justify-between items-center">
                                 <p>Nombre de produits</p>
-                            <p class="font-normal">{{ nombreProduits }}</p>
+                            <p class="font-normal">{{ cartItems.length }}</p>
                     </div>
                 </div>
                 <hr class="my-4">
@@ -58,10 +55,10 @@
                 *ngFor="let item of cartItems"
                 class="flex gap-4 bg-white text-indigo-600 rounded-lg p-4 shadow-md"
             >
-                <img [src]="item.image" alt="" class="w-16 h-16 rounded-lg" />
+                <img [src]="item.produit.image" alt="" class="w-16 h-16 rounded-lg" />
                 <div class="flex flex-col justify-between w-full">
                     <div class="flex justify-between items-center">
-                        <p class="text-lg font-semibold">{{ item.name }}</p>
+                        <p class="text-lg font-semibold">{{ item.produit.nom }}</p>
                         <button class="text-red" (click)="removeFromCart(item)">
                             x
                         </button>
@@ -77,7 +74,7 @@
                             <p
                                 class="p-1 w-8 h-8 flex items-center justify-center bg-indigo-600 text-white rounded"
                             >
-                                {{ item.quantity }}
+                                {{ item.produit.quantite }}
                             </p>
                             <button
                                 class="bg-gray-300 p-1 rounded"
@@ -86,7 +83,7 @@
                                 +
                             </button>
                         </div>
-                        <p class="text-xl">{{ item.price * item.quantity }} Fr</p>
+                        <p class="text-xl">{{ item.produit.prix * item.produit.quantite }} Fr</p>
                     </div>
                 </div>
             </div>

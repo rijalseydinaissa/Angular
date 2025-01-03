@@ -36,6 +36,10 @@ export class ProduitService {
     return this.products$;
   }
 
+  public login(username: string, password: string): Observable<any> {
+    return this.http.post<any>(this.baseUrl + "/login", { username, password });
+  }
+
  // produit.service.ts
  public createProductWithImage(productData: any, imageFile: File | null): Observable<ProductResponse> {
   return this.http.post<ProductResponse>(this.baseUrl + "/produits", productData).pipe(
@@ -60,3 +64,4 @@ export class ProduitService {
     return this.http.post<{url: string}>(`${this.baseUrl}/produits/${productId}/image`, formData);
 }
 }
+

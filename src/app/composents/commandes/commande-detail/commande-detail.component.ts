@@ -1,30 +1,35 @@
 import { NgClass, NgFor } from '@angular/common';
-import { Component, output, Output, signal, Signal } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-commande-detail',
-  imports: [NgFor,NgClass],
+  imports: [NgFor, NgClass],
   templateUrl: './commande-detail.component.html',
-  styleUrl: './commande-detail.component.css'
+  styleUrls: ['./commande-detail.component.css'],
 })
 export class CommandeDetailComponent {
 
-  @Output() nom:string = 'Diol';
-  @Output() prenom:string = 'Issa';
-  @Output() currentTotal:number = 200000;
-  @Output() cartTotal:number = 200000;
-  @Output() cartItems:any = [];
-  @Output() status:string = 'Non réglée';
-  close = output<(boolean)>();
-  nombreProduits:number = this.cartItems.length;
+  constructor() {
+    console.log(this.closed);
+    
+  }
 
-  closed = signal(false);
+  @Input() nom: string = '';
+  @Input() prenom: string = '';
+  @Input() currentTotal: number = 200000;
+  @Input() cartTotal: number = 200000;
+  @Input() cartItems: any = [];
+  @Input() status: string = 'Non réglée';
+  @Output() close = new EventEmitter<boolean>();
+  nombreProduits: number = this.cartItems.length;
 
-  updateCartItemQuantity(arg:any,arg1: number) {
+  @Input() closed: boolean = true;
+
+  updateCartItemQuantity(arg: any, arg1: number) {
     this.currentTotal = 150000;
   }
 
-  removeFromCart(arg:any) {
+  removeFromCart(arg: any) {
     this.currentTotal = 500000;
   }
 
@@ -33,7 +38,7 @@ export class CommandeDetailComponent {
   }
 
   closeOverlay() {
-    this.closed.set(!this.closed());
-    this.close.emit(this.closed());
+    this.closed = !this.closed;
+    this.close.emit(this.closed);
   }
 }

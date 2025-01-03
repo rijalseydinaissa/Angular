@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CardlineComponent } from "./cardline/cardline.component";
 import { CommandesComponent } from '../commandes.component';
 
@@ -15,4 +15,10 @@ export class CommandeCardComponent {
   @Input() nombreProduits!: number;
   @Input() total!: number;
   @Input() status!: string;
+
+  @Output() openDetail = new EventEmitter<boolean>();
+
+  open() {
+    this.openDetail.emit(true);
+  }
 }

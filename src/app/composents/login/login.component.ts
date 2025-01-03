@@ -1,38 +1,46 @@
 import { CommonModule, NgClass } from '@angular/common';
 import { Component, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
-import { OnChanges } from '@angular/core';
+import { ProduitService } from '../../services/produit.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule,RouterLink,NgClass],
+  imports: [CommonModule, RouterLink, NgClass, FormsModule],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-    constructor(private router: Router) {}
+  constructor(private router: Router, private produitService: ProduitService) {}
 
-    close = signal(false);
+  close = signal(false);
 
-    OnInit() {
-      console.log(this.router.url);
-      
-        this.close.set(true);
-    }
-    
-    OnChanges() {
-      console.log(this.router.url);
-      
-        this.close.set(true);
-    }
+  username = '';
+  password = '';
+  response = '';
 
-    handleSubmit() {
-      console.log('Connexion réussie');
+  ngOnInit() {
+    console.log(this.router.url);
+    this.close.set(true);
+  }
+
+  ngOnChanges() {
+    console.log(this.router.url);
+    this.close.set(true);
+  }
+
+  handleSubmit() {
+    this.produitService
+      .login(this.username, this.password)
+      .subscribe((data) => {
+        this.response = data;
+      });
+
+    if (this.response != '') {
       this.close.set(true);
       this.router.navigate(['/dashboard']);
     }
-
-
+  }
 }
