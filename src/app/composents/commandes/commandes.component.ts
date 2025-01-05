@@ -33,109 +33,7 @@ export class CommandesComponent implements OnInit {
   }
 
   constructor(private commandeService:CommandeService){}
-  // Commandes initiales
-  // commandes=[
-  //   {
-  //     id: 1001,
-  //     client: 'Issa Diol',
-  //     date: '17/12/2024',
-  //     nombreProduits: 5,
-  //     total: 200000,
-  //     status: 'Non réglée',
-  //   },
-  //   {
-  //     id: 1002,
-  //     client: 'Aissatou Sarr',
-  //     date: '16/12/2024',
-  //     nombreProduits: 3,
-  //     total: 150000,
-  //     status: 'Réglée',
-  //   },
-  //   {
-  //     id: 1003,
-  //     client: 'Babacar Ndiaye',
-  //     date: '15/12/2024',
-  //     nombreProduits: 8,
-  //     total: 500000,
-  //     status: 'Non réglée',
-  //   },
-  //   {
-  //     id: 1002,
-  //     client: 'Aissatou Sarr',
-  //     date: '16/12/2024',
-  //     nombreProduits: 3,
-  //     total: 150000,
-  //     status: 'Réglée',
-  //   },
-  //   {
-  //     id: 1003,
-  //     client: 'Babacar Ndiaye',
-  //     date: '15/12/2024',
-  //     nombreProduits: 8,
-  //     total: 500000,
-  //     status: 'Non réglée',
-  //   },
-  //   {
-  //     id: 1001,
-  //     client: 'Issa Diol',
-  //     date: '18/12/2024',
-  //     nombreProduits: 5,
-  //     total: 200000,
-  //     status: 'Non réglée',
-  //   },
-  //   {
-  //     id: 1002,
-  //     client: 'Aissatou Sarr',
-  //     date: '16/12/2024',
-  //     nombreProduits: 3,
-  //     total: 150000,
-  //     status: 'Réglée',
-  //   },
-  //   {
-  //     id: 1002,
-  //     client: 'Aissatou Sarr',
-  //     date: '16/12/2024',
-  //     nombreProduits: 3,
-  //     total: 150000,
-  //     status: 'Réglée',
-  //   },
-  //   {
-  //     id: 1003,
-  //     client: 'Babacar Ndiaye',
-  //     date: '15/12/2024',
-  //     nombreProduits: 8,
-  //     total: 500000,
-  //     status: 'Non réglée',
-  //   },
-  //   {
-  //     id: 1001,
-  //     client: 'Issa Diol',
-  //     date: '17/12/2024',
-  //     nombreProduits: 5,
-  //     total: 200000,
-  //     status: 'Non réglée',
-  //   },
-  //   {
-  //     id: 1002,
-  //     client: 'Aissatou Sarr',
-  //     date: '16/12/2024',
-  //     nombreProduits: 3,
-  //     total: 150000,
-  //     status: 'Réglée',
-  //   },
-  //   {
-  //     id: 1002,
-  //     client: 'Aissatou Sarr',
-  //     date: '16/12/2024',
-  //     nombreProduits: 3,
-  //     total: 150000,
-  //     status: 'Réglée',
-  //   }
-  // ];
-
-  // searchClient: string = '';
-  // filterDate: string = '';
-  // filteredCommandes = [...this.commandes];
+  
   ngOnInit(): void {
     this.loadCommandes();
   }
@@ -144,12 +42,14 @@ export class CommandesComponent implements OnInit {
       next: (data) => {
         this.commandes = data;
         this.filteredCommandes = [...this.commandes];
+        this.filterCommandes(); // Applique les filtres existants
       },
       error: (error) => {
-        console.error('Erreur lors du chargement des commandes :', error);
+        console.error('Erreur lors du chargement des commandes :', error);
       }
     });
   }
+
   handleForm(bole: boolean) {
     this.showProductForm.set(bole);
   }

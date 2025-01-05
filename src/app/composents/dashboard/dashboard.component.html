@@ -1,58 +1,74 @@
-<div class="p-8 flex flex-col gap-8 h-full">
-  <div class="flex items-center justify-between w-full h-full">
+<div class="p-4 flex flex-col h-full">
+  <!-- Added mt-6 for top spacing from navbar -->
+  <div class="flex items-center justify-between w-full mt-5 mb-4">
     <app-stats-card
       *ngFor="let stat of stats"
-      class="w-1/4"
+      class="w-1/4 px-2"
       [title]="stat.title"
       [value]="stat.value"
       [icon]="stat.icon"
     ></app-stats-card>
   </div>
 
-  <div class="flex w-full gap-4 h-full">
-    <div class="flex flex-col gap-4 bg-primary rounded flex-1 p-4 text-white">
-      <p class="text-xl font-bold">Ventes Recentes</p>
-      <div class="">
-        <table>
-          <thead>
+  <!-- Added mt-6 to match top spacing -->
+  <div class="flex w-full gap-4 mt-6" style="height: 640px;">
+    <!-- Recent Sales Section -->
+    <div class="flex flex-col bg-primary rounded flex-1 p-4 text-white h-full">
+      <p class="text-xl font-bold mb-4">Ventes Recentes</p>
+      
+      <div class="flex-grow overflow-auto">
+        <table class="w-full">
+          <thead class="sticky top-0 bg-primary">
             <tr class="text-center">
-              <th>Date</th>
-              <th>Produit</th>
-              <th>Quantite</th>
-              <th>Prix Unitaire</th>
+              <th class="px-4 py-2">Date</th>
+              <th class="px-4 py-2">Produit</th>
+              <th class="px-4 py-2">Quantite</th>
+              <th class="px-4 py-2">Prix Unitaire</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let vente of ventes">
-              <td>{{vente.date}}</td>
-              <td>{{vente.produit}}</td>
-              <td>{{vente.quantite}}</td>
-              <td>{{vente.prixUnitaire}}</td>
+            <tr *ngFor="let vente of ventes" class="hover:bg-primary-light">
+              <td class="px-4 py-2">{{vente.date}}</td>
+              <td class="px-4 py-2">{{vente.produit}}</td>
+              <td class="px-4 py-2 text-center">{{vente.quantite}}</td>
+              <td class="px-4 py-2 text-center">{{vente.prixUnitaire}}</td>
             </tr>
-            
           </tbody>
         </table>
       </div>
-      <button class="bg-green text-white rounded px-4 py-2 self-end">
+
+      <!-- <button class="bg-green text-white rounded px-4 py-2 self-end mt-4">
         Voir plus
-      </button>
+      </button> -->
     </div>
-    <div
-      class="flex flex-col gap-4 bg-secondary rounded flex-2 p-4 text-white w-1/3"
-    >
-      <h1 class="text-3xl font-bold text-center">Produits</h1>
-      <div class="flex flex-col gap-4">
-        <h3 class="text-xl font-bold text-green">Les plus vendues</h3>
-        <div *ngFor="let produits of plusVendues" class="flex justify-between items-center">
-          <p>{{produits.produit}}</p>
-          <p>{{produits.quantite}}</p>
+
+    <!-- Products Section -->
+    <div class="flex flex-col bg-secondary rounded p-4 text-white w-1/3 h-full">
+      <h1 class="text-2xl font-bold text-center mb-4">Produits</h1>
+      
+      <div class="flex-grow flex flex-col justify-between">
+        <!-- Most Sold Products -->
+        <div class="flex flex-col gap-2">
+          <h3 class="text-xl font-bold text-green mb-2">Les plus vendues</h3>
+          <div class="space-y-2">
+            <div *ngFor="let produits of plusVendues" 
+                 class="flex justify-between items-center p-2 hover:bg-secondary-light rounded">
+              <p>{{produits.produit}}</p>
+              <p>{{produits.quantite}}</p>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="flex flex-col gap-4">
-        <h3 class="text-xl font-bold text-red">Bientot terminee</h3>
-        <div *ngFor="let termine of bientotTermine " class="flex justify-between items-center">
-          <p>{{termine.produit}}</p>
-          <p>{{termine.quantite}}</p>
+
+        <!-- Running Low Products -->
+        <div class="flex flex-col gap-2">
+          <h3 class="text-xl font-bold text-red mb-2">Bientot terminee</h3>
+          <div class="space-y-2">
+            <div *ngFor="let termine of bientotTermine" 
+                 class="flex justify-between items-center p-2 hover:bg-secondary-light rounded">
+              <p>{{termine.produit}}</p>
+              <p>{{termine.quantite}}</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
