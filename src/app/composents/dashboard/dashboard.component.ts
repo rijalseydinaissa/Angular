@@ -1,3 +1,4 @@
+import { DashboardService } from './../../services/dashboard.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -60,7 +61,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private commandeService: CommandeService,
-    private produitService: ProduitService
+    private produitService: ProduitService,
+    private dashboardService: DashboardService
   ) {}
 
   ngOnInit() {
@@ -82,7 +84,7 @@ export class DashboardComponent implements OnInit {
 
   private async loadStats() {
     try {
-      const commandes: Commande[] = await firstValueFrom(this.commandeService.getCommandes());
+      const commandes: Commande[] = await firstValueFrom(this.dashboardService.getCommands());
       const totalCommandes = commandes.length;
       const ventesValidees = commandes.filter(cmd => cmd.status === 'REGLE').length;
       const revenus = commandes
@@ -116,7 +118,7 @@ export class DashboardComponent implements OnInit {
 
   private async loadVentesRecentes() {
     try {
-      const commandes: Commande[] = await firstValueFrom(this.commandeService.getCommandes());
+      const commandes: Commande[] = await firstValueFrom(this.dashboardService.getCommands());
       this.ventes = commandes
         .filter(cmd => cmd.status === 'REGLE' && cmd.commandeProduits?.length > 0)
         .slice(-7)
@@ -134,7 +136,7 @@ export class DashboardComponent implements OnInit {
 
   private async loadProduitsPlusVendus() {
     try {
-      const commandes: Commande[] = await firstValueFrom(this.commandeService.getCommandes());
+      const commandes: Commande[] = await firstValueFrom(this.dashboardService.getCommands());
       const ventesParProduit = new Map<number, { nom: string; totalQuantite: number }>();
 
       commandes
@@ -166,7 +168,7 @@ export class DashboardComponent implements OnInit {
 
   private async loadProduitsBientotTermines() {
     try {
-      const produits = await firstValueFrom(this.produitService.getProducts());
+      const produits = await firstValueFrom(this.dashboardService.getProduits());
       this.bientotTermine = produits
         .filter((p: { quantite: number | null; }) => p.quantite != null && p.quantite <= 5)
         .map((p: { nom: any; quantite: any; }) => ({
