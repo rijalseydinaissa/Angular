@@ -31,11 +31,6 @@ interface CartItem {
 export class CommandFormComponent implements OnInit {
   @Output() closed = new EventEmitter<boolean>();
 
-  // products: Product[] = [
-  //   { id: 1, name: 'Pomme de terre', price: 24000, image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png' },
-  //   { id: 2, name: 'Carotte', price: 15000, image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png' },
-  //   { id: 3, name: 'Oignon', price: 18000, image: 'https://www.powertrafic.fr/wp-content/uploads/2023/04/image-ia-exemple.png' },
-  // ];
   products: any[] = [];
   commandeForm: FormGroup;
   cartItems: CartItem[] = [];
@@ -48,7 +43,7 @@ export class CommandFormComponent implements OnInit {
     this.commandeForm = this.fb.group({
       clientName: ['', Validators.required],
       productId: [null, Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]],
+      quantity: [1, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]*$')]],
     });
   }
   ngOnInit() {
@@ -59,7 +54,6 @@ export class CommandFormComponent implements OnInit {
     this.commandeService.getProduits().subscribe({
       next: (produits) => {
         console.log(produits);
-
         this.products = produits;
       },
       error: (err) => {
@@ -111,6 +105,11 @@ export class CommandFormComponent implements OnInit {
 
         this.currentTotal = 0;
       }
+    }else{
+      Object.keys(this.commandeForm.controls).forEach(key => {
+        const control = this.commandeForm.get(key);
+        control?.markAsTouched();
+      });
     }
   }
 
