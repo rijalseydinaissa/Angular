@@ -1,5 +1,6 @@
 import { CommandeService } from './../../services/commande.service';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import {
   FormsModule,
@@ -46,6 +47,7 @@ export class CommandFormComponent implements OnInit {
       quantity: [1, [Validators.required, Validators.min(1), Validators.pattern('^[0-9]*$')]],
     });
   }
+  
   ngOnInit() {
     this.loadProduits();
   }
@@ -127,46 +129,92 @@ export class CommandFormComponent implements OnInit {
     }
   }
 
-  // handleSubmit() {
-  //   if (this.cartItems.length > 0) {
-  //     console.log('Order submitted:', {
-  //       clientName: this.clientName,
-  //       items: this.cartItems,
-  //       total: this.cartTotal
-  //     });
-  //     this.close();
-  //   }
-  // }
+  // Create a loading
+  createLoading() {
+    Swal.fire({
+      title: 'En cours',
+      allowEscapeKey: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+  }
 
   handleSubmit() {
-    if (this.commandeForm.valid) {
+    if (this.commandeForm.valid && this.cartItems.length > 0) {
+      // Show loading
+      this.createLoading();
+  
       const commande = {
         date: new Date(),
         status: 'NONREGLE',
         client: this.clientName,
-        produits: this.cartItems.map((item) => {
-          console.log({
-            produitId: item.product.id,
-            quantite: item.quantity,
-          });
-
-          const product = {
-            produitId: item.product.id,
-            quantite: item.quantity,
-          };
-
-          return product;
-        }),
+        produits: this.cartItems.map((item) => ({
+          produitId: item.product.id,
+          quantite: item.quantity,
+        })),
       };
-      console.log('Commande envoyée:', commande);
+  
       this.commandeService.createCommande(commande).subscribe({
         next: (response) => {
-          console.log('Commande créée avec succès:', response);
+          // Close loading
+          Swal.close();
+          
+          // Show success message
+          Swal.fire({
+            icon: 'success',
+            title: 'Commande enregistrée!',
+            text: 'La commande a été créée avec succès',
+            confirmButtonText: 'Super!',
+            confirmButtonColor: '#28a745',
+            timer: 2000,
+            timerProgressBar: true
+          });
+  
+          // Reset form and cart after successful creation
           this.commandeForm.reset();
+          this.cartItems = [];
+          console.log('Commande créée avec succès:', response);
         },
         error: (err) => {
+          // Close loading
+          Swal.close();
+          
+          // Show error message
+          Swal.fire({
+            icon: 'error',
+            title: 'Erreur',
+            text: 'Impossible de créer la commande',
+            footer: 'Veuillez réessayer plus tard',
+            confirmButtonColor: '#dc3545',
+            showCancelButton: true,
+            cancelButtonText: 'Fermer',
+            confirmButtonText: 'Réessayer'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              // If user clicks "Réessayer", try submitting again
+              this.handleSubmit();
+            }
+          });
+          
           console.error('Erreur lors de la création de la commande:', err);
         },
+      });
+    } else {
+      // Show validation error if form is invalid or cart is empty
+      Swal.fire({
+        icon: 'warning',
+        title: 'Attention',
+        text: this.cartItems.length === 0 
+          ? 'Votre panier est vide'
+          : 'Veuillez remplir tous les champs requis',
+        confirmButtonColor: '#ffc107'
+      });
+  
+      // Mark all form controls as touched to trigger validation messages
+      Object.keys(this.commandeForm.controls).forEach(key => {
+        const control = this.commandeForm.get(key);
+        control?.markAsTouched();
       });
     }
   }

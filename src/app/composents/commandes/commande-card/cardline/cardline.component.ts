@@ -1,9 +1,9 @@
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-cardline',
-  imports: [NgIf],
+  imports: [NgIf,NgClass],
   templateUrl: './cardline.component.html',
   styleUrl: './cardline.component.css'
 })
