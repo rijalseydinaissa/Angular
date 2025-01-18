@@ -64,6 +64,29 @@ export class CommandesComponent implements OnInit {
       return matchesClient && matchesDate;
     });
   }
+  handleStatusChange(event: {id: number, status: string}) {
+    if (!event.id) {
+      console.error('ID de commande manquant');
+      return;
+    }
+    console.log('Mise à jour du statut pour la commande:', event.id, 'nouveau statut:', event.status);
+    
+    this.commandeService.updateCommandeStatus(event.id, event.status).subscribe({
+      next: (response) => {
+        console.log('Statut mis à jour avec succès:', response);
+        // Mettre à jour le statut dans le tableau local
+        const index = this.commandes.findIndex(c => c.id === event.id);
+        if (index !== -1) {
+          this.commandes[index].status = event.status;
+          this.filteredCommandes = [...this.commandes];
+          this.filterCommandes();
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors de la mise à jour du statut:', error);
+      }
+    });
+  }
   private formatDate(dateStr: string): string {
     const [day, month, year] = dateStr.split('/');
     return `${year}-${month}-${day}`;

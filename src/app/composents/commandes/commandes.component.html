@@ -42,7 +42,8 @@
       [date]="commande.date"
       [status]="commande.status"
       [total]="commande.montantTotal"
-
+      [id]="commande.id"
+      (statusChange)="handleStatusChange($event)"
       (openDetail)="showDetailModal(commande)"
     >
       <div class="text-sm text-gray-300">
@@ -58,6 +59,7 @@
     class="absolute inset-0 transform transition-transform bg-black/75 flex items-center justify-end duration-300 text-white"
     [class.translate-x-0]="showProductForm()"
     [class.translate-x-full]="!showProductForm()"
+    
   >
   </app-command-form>
   

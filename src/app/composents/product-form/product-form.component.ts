@@ -1,8 +1,8 @@
 import { ProduitService } from './../../services/produit.service';
 import { Component, EventEmitter, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import Swal from 'sweetalert2';
 import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
  selector: 'app-product-form',
@@ -20,7 +20,7 @@ export class ProductFormComponent {
  errorMessage: string = '';
  imageFile: File | null = null;
 
- constructor(private fb: FormBuilder, private produitService: ProduitService) {
+ constructor(private fb: FormBuilder, private produitService: ProduitService,private alertService: AlertService) {
    this.productForm = this.fb.group({
      nom: ['', [Validators.required]],
      prixAchat: ['', [Validators.required, Validators.min(1)]],
@@ -44,14 +44,7 @@ export class ProductFormComponent {
 
  handleSubmit() {
   if (this.productForm.valid) {
-    // Show loading
-    Swal.fire({
-      title: 'En cours',
-      allowEscapeKey: false,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-    });
+    this.alertService.showLoading();
 
     const productData = {
       ...this.productForm.value,
@@ -62,60 +55,24 @@ export class ProductFormComponent {
 
     this.produitService.createProductWithImage(productData, this.imageFile).subscribe({
       next: (response) => {
-        // Close loading
-        Swal.close();
-        
-        // Show success message
-        Swal.fire({
-          icon: 'success',
-          title: 'Produit enregistré!',
-          text: 'Le produit a été ajouté à la base de données',
-          confirmButtonText: 'Super!',
-          confirmButtonColor: '#28a745',
-          timer: 2000,
-          timerProgressBar: true
-        });
-
-        // Emit the created product
+        this.alertService.closeAlert();
+        this.alertService.showSuccess('Le produit a été créé avec succès');
         this.productCreated.emit(response);
-        // Reset form and image
         this.productForm.reset();
         this.imageFile = null;
-        console.log('Produit créé avec succès:', response);
       },
       error: (error) => {
-        // Close loading
-        Swal.close();
-        
-        // Show error message
-        Swal.fire({
-          icon: 'error',
-          title: 'Erreur',
-          text: 'Impossible de créer le produit',
-          footer: 'Veuillez réessayer plus tard',
-          confirmButtonColor: '#dc3545',
-          showCancelButton: true,
-          cancelButtonText: 'Fermer',
-          confirmButtonText: 'Réessayer'
-        }).then((result) => {
+        this.alertService.closeAlert();
+        this.alertService.showError('Impossible de créer le produit').then((result) => {
           if (result.isConfirmed) {
-            // If user clicks "Réessayer", try submitting again
             this.handleSubmit();
           }
         });
-        console.error('Erreur lors de la création du produit:', error);
         this.errorMessage = 'Erreur lors de la création du produit. Veuillez réessayer.';
       },
     });
   } else {
-    // Show validation error
-    Swal.fire({
-      icon: 'warning',
-      title: 'Attention',
-      text: 'Veuillez remplir tous les champs requis correctement',
-      confirmButtonColor: '#ffc107'
-    });
-    // Mark all form controls as touched to trigger validation messages
+    this.alertService.showWarning('Veuillez remplir tous les champs requis correctement');
     this.productForm.markAllAsTouched();
   }
 }

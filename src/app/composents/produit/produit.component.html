@@ -37,7 +37,7 @@
   <!-- Tableau des produits -->
   <div
     class="flex flex-col bg-primary w-full rounded-xl text-white h-[90%] overflow-y-scroll"
-  >
+  > 
     <table class="overflow-y-auto w-full">
       <thead>
         <tr>
@@ -62,8 +62,8 @@
             <p
             class="p-2 rounded font-bold text-lg text-white"
             [ngClass]="{
-              'bg-green-500': product.statut === 'SUFFISANT',
-              'bg-red-500': product.statut !== 'SUFFISANT'
+              'bg-green': product.statut === 'SUFFISANT',
+              'bg-red': product.statut !== 'SUFFISANT'
             }"
           >
             {{ product.statut }}

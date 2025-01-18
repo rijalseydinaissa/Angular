@@ -15,10 +15,18 @@ export class CommandeService {
     this.loadInitialCommandes();
   }
 
+  
+  private sortCommandesByDate(commandes: any[]): any[] {
+    return commandes.sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  }
+
   private loadInitialCommandes(): void {
     this.http.get<any[]>(`${this.apiURL}/commandes`)
       .subscribe(commandes => {
-        this.commandesSubject.next(commandes);
+        const sortedCommandes = this.sortCommandesByDate(commandes);
+        this.commandesSubject.next(sortedCommandes);
       });
   }
 
@@ -26,12 +34,18 @@ export class CommandeService {
     return this.commandes$;
   }
 
+   updateCommandeStatus(id: number, status: string) {
+    const url = `${this.apiURL}/commandes/${id}/status`;
+    return this.http.patch(url, { status });
+  }
+
+
   public createCommande(commandeData: any): Observable<any> {
     return this.http.post(`${this.apiURL}/commandes`, commandeData)
       .pipe(
         tap(newCommande => {
           const currentCommandes = this.commandesSubject.value;
-          this.commandesSubject.next([...currentCommandes, newCommande]);
+          this.commandesSubject.next([newCommande, ...currentCommandes]);
         })
       );
   }
