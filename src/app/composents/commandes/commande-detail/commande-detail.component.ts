@@ -89,9 +89,7 @@ export class CommandeDetailComponent {
     });
 }
   
-  
-  
-  
+
 
   removeFromCart(arg: any) {
     this.currentTotal = 500000;
