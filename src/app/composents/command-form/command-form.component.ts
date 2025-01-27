@@ -9,6 +9,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { AlertService } from '../../services/alert.service';
+import { ProduitService } from '../../services/produit.service';
 
 interface Product {
   id: number;
@@ -40,6 +41,7 @@ export class CommandFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private commandeService: CommandeService,
+    private produitService: ProduitService,
     private alertService: AlertService
   ) {
     this.commandeForm = this.fb.group({
@@ -54,7 +56,7 @@ export class CommandFormComponent implements OnInit {
   }
 
   private loadProduits() {
-    this.commandeService.getProduits().subscribe({
+    this.produitService.getProducts().subscribe({
       next: (produits) => {
         console.log(produits);
         this.products = produits;
@@ -149,6 +151,7 @@ export class CommandFormComponent implements OnInit {
           this.alertService.showSuccess('La commande a été créée avec succès');
           this.commandeForm.reset();
           this.cartItems = [];
+          this.produitService.loadProducts();
         },
         error: (err) => {
           this.alertService.closeAlert();

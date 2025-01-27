@@ -13,3 +13,27 @@ label{
 input{
   @apply border-none focus-within:outline-none p-1.5 rounded text-primary
 }
+.input-flex {
+  display: flex;
+  gap: 1rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.input-group input,
+.input-group select {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  width: 100%;
+  color: black;
+}
+
+small {
+  color: #ff4444;
+  font-size: 0.75rem;
+}

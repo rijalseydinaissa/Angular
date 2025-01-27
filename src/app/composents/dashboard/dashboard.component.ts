@@ -121,7 +121,7 @@ export class DashboardComponent implements OnInit {
       const commandes: Commande[] = await firstValueFrom(this.dashboardService.getCommands());
       this.ventes = commandes
         .filter(cmd => cmd.status === 'REGLE' && cmd.commandeProduits?.length > 0)
-        .slice(-7)
+        .slice(-8)
         .map(cmd => ({
           date: new Date(cmd.date).toLocaleDateString(),
           produit: cmd.commandeProduits[0]?.produit.nom || 'Produit inconnu',

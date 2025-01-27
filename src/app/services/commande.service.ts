@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ProduitService } from './produit.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,10 +12,9 @@ export class CommandeService {
   private commandesSubject = new BehaviorSubject<any[]>([]);
   commandes$ = this.commandesSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private produitService: ProduitService) {
     this.loadInitialCommandes();
   }
-
   
   private sortCommandesByDate(commandes: any[]): any[] {
     return commandes.sort((a, b) => 
@@ -38,6 +38,17 @@ export class CommandeService {
     const url = `${this.apiURL}/commandes/${id}/status`;
     return this.http.patch(url, { status });
   }
+  public deleteCommande(id: number): Observable<void> {
+    const url = `${this.apiURL}/commandes/${id}`;
+    return this.http.delete<void>(url).pipe(
+      tap(() => {
+        // Mettre à jour le BehaviorSubject après la suppression
+        const currentCommandes = this.commandesSubject.value;
+        const updatedCommandes = currentCommandes.filter(commande => commande.id !== id);
+        this.commandesSubject.next(updatedCommandes);
+      })
+    );
+  }
 
 
   public createCommande(commandeData: any): Observable<any> {
@@ -46,6 +57,7 @@ export class CommandeService {
         tap(newCommande => {
           const currentCommandes = this.commandesSubject.value;
           this.commandesSubject.next([newCommande, ...currentCommandes]);
+          this.produitService.loadProducts();
         })
       );
   }

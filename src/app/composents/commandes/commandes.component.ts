@@ -18,8 +18,10 @@ export class CommandesComponent implements OnInit {
   filteredCommandes: any[] = [];
   searchClient: string = '';
   filterDate: string = '';
+
   commande = signal({client:"",date:"",montantTotal:0,commandeProduits:Array,status:"",id:0});
   showDetail = signal<boolean>(true);
+  
 
   setCommande(commande: any) {
     this.commande.set(commande);
@@ -36,7 +38,10 @@ export class CommandesComponent implements OnInit {
   
   ngOnInit(): void {
     this.loadCommandes();
+    this.filteredCommandes = [...this.commandes];
+    this.filterCommandes();
   }
+  
   loadCommandes(): void {
     this.commandeService.getCommandes().subscribe({
       next: (data) => {
@@ -84,6 +89,22 @@ export class CommandesComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors de la mise à jour du statut:', error);
+      }
+    });
+  }
+  //delete commande 
+  deleteCommande(id: number) {
+    this.commandeService.deleteCommande(id).subscribe({
+      next: () => {
+        // Pas besoin de recharger toutes les commandes
+        const updatedCommandes = this.commandes.filter(commande => commande.id !== id);
+        this.commandes = updatedCommandes;
+        this.filteredCommandes = this.commandes; // Mettre à jour aussi les commandes filtrées
+        this.filterCommandes(); // Réappliquer les filtres
+        this.showDetail.set(true); // Fermer la modal
+      },
+      error: (error) => {
+        console.error('Erreur lors de la suppression de la commande :', error);
       }
     });
   }
