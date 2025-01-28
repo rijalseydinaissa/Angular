@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { BehaviorSubject, tap } from 'rxjs';
 import { switchMap, map, of } from 'rxjs';
 
@@ -49,19 +49,17 @@ export class ProduitService {
   }
 // Dans ProduitService
 updateProduct(id: number, productData: any, imageFile: File | null): Observable<any> {
-  const currentProducts = this.productsSubject.getValue();
-  const currentProduct = currentProducts.find(p => p.id === id);
-  
-  const dataToSend = {
-    ...productData,
-    nom: productData.nom || '',
-    prix: Number(productData.prix) || 0,
-    quantite: Number(productData.quantite) || 0,
-    categorie: productData.categorie || '',
-    image: currentProduct?.image || null
-  };
-
-  return this.http.put<ProductResponse>(`${this.baseUrl}/produits/${id}`, dataToSend).pipe(
+  return this.http.put<ProductResponse>(`${this.baseUrl}/produits/${id}`, productData).pipe(
+    map(response => {
+      // Si la réponse est null, retournons les données envoyées
+      if (!response) {
+        return {
+          ...productData,
+          id: id
+        };
+      }
+      return response;
+    }),
     switchMap(response => {
       if (imageFile) {
         return this.uploadProductImage(id, imageFile).pipe(
@@ -71,15 +69,12 @@ updateProduct(id: number, productData: any, imageFile: File | null): Observable<
           }))
         );
       }
-      return of({
-        ...response,
-        image: currentProduct?.image || null
-      });
+      return of(response);
     }),
     tap(finalProduct => {
       const currentProducts = this.productsSubject.getValue();
       const updatedProducts = currentProducts.map(product => 
-        product.id === id ? { ...finalProduct } : product
+        product.id === id ? finalProduct : product
       );
       this.productsSubject.next(updatedProducts);
     })

@@ -90,36 +90,36 @@ createProduct(productData: any){
 }
 private updateProduct(productData: any) {
   if (!this.productToEdit?.id) {
-    console.error('No product to edit or invalid product ID');
     this.alertService.showError('Produit invalide');
     return;
   }
 
   const updateData = {
-    ...productData,
-    nom: productData.nom || '',
-    prix: Number(productData.prix) || 0,
-    quantite: Number(productData.quantite) || 0,
-    categorie: productData.categorie || '',
-    image: this.productToEdit.image || null
+    id: this.productToEdit.id,
+    nom: productData.nom,
+    prixAchat: parseFloat(productData.prixAchat),
+    prix: parseFloat(productData.prix),
+    quantite: parseInt(productData.quantite),
+    categorie: productData.categorie,
+    image: this.productToEdit.image // Préserver l'image existante
   };
 
-  this.produitService.updateProduct(this.productToEdit.id, updateData, this.imageFile).subscribe({
-    next: (response) => {
-      if (!response) {
-        throw new Error('No response received from server');
-      }
-      const updatedProduct = {
-        ...response,
-        id: this.productToEdit.id,
-        image: response.image || this.productToEdit.image || null,
-        nom: response.nom || ''
-      };
-      this.handleSuccess(updatedProduct, 'mis à jour');
-      this.productUpdated.emit(updatedProduct);
-    },
-    error: (error) => this.handleError(error),
-  });
+  this.produitService.updateProduct(this.productToEdit.id, updateData, this.imageFile)
+    .subscribe({
+      next: (response) => {
+        // Utiliser les données envoyées si la réponse est null
+        const updatedProduct = response || updateData;
+        
+        // Émettre la mise à jour
+        this.productUpdated.emit(updatedProduct);
+        
+        // Forcer le rechargement des données
+        this.produitService.loadProducts();
+        
+        this.handleSuccess(updatedProduct, 'mis à jour');
+      },
+      error: (error) => this.handleError(error)
+    });
 }
 
 private handleSuccess(response: any, action: string) {

@@ -87,42 +87,27 @@ deleteProduct(productId: number) {
    this.filterProducts();
  }
  handleProductUpdated(updatedProduct: Product) {
-  if (!updatedProduct || !updatedProduct.id) {
-    console.error('Updated product is null or missing id');
+  if (!updatedProduct) {
+    console.error('Updated product is null');
     return;
   }
 
-  try {
-    // Mettre à jour this.products
-    const index = this.products.findIndex(p => p.id === updatedProduct.id);
-    if (index !== -1) {
-      this.products[index] = {
-        ...updatedProduct,
-        image: updatedProduct.image || this.products[index].image || null,
-        nom: updatedProduct.nom || '',
-        quantite: updatedProduct.quantite || 0,
-        prix: updatedProduct.prix || 0,
-        categorie: updatedProduct.categorie || '',
-        statut: updatedProduct.statut || '',
-        statutClass: updatedProduct.statutClass || ''
-      };
-    } else {
-      this.products.push({
-        ...updatedProduct,
-        nom: updatedProduct.nom || '',
-        image: updatedProduct.image || null
-      });
-    }
+  // Mettre à jour le produit dans le tableau local
+  const index = this.products.findIndex(p => p.id === updatedProduct.id);
+  if (index !== -1) {
+    // Fusionner les données existantes avec les nouvelles
+    this.products[index] = {
+      ...this.products[index],
+      ...updatedProduct
+    };
     
-    // Mettre à jour filteredProducts
+    // Mettre à jour la liste filtrée
     this.filteredProducts = [...this.products];
     this.filterProducts();
-    
-    this.selectedProduct = null;
-    this.showProductForm.set(false);
-  } catch (error) {
-    console.error('Error updating product:', error);
   }
+
+  this.selectedProduct = null;
+  this.showProductForm.set(false);
 }
  closeForm(event: boolean) {
    this.showProductForm.set(event);
