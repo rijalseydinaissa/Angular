@@ -1,0 +1,12 @@
+.input-grp{
+  @apply flex flex-col gap-1
+  
+}
+
+input{
+  @apply bg-purple
+}
+
+.custom-input{
+  @apply rounded px-4 py-3 border-none outline-none focus-within:outline-none
+}

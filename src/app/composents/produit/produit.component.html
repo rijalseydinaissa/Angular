@@ -1,0 +1,121 @@
+<div class="flex flex-col gap-8 p-8 h-full">
+  <div class="flex w-full justify-between items-center gap-4">
+    <p class="text-primary text-3xl font-bold">Products</p>
+    <!-- Champ de recherche -->
+    <div class="border rounded-full px-4 py-2 w-1/4">
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (input)="filterProducts()"
+        class="border-none focus-within:outline-none w-full"
+        placeholder="Rechercher..."
+      />
+    </div>
+
+    <!-- Boutons de filtre -->
+    <select
+      [(ngModel)]="selectedFilter"
+      (change)="filterProducts()"
+      class="block px-4 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
+    >
+    <option value="all">Tous les produits</option>
+    <option *ngFor="let category of categories" [value]="category">
+      {{ category }}
+    </option>
+    </select>
+
+    <!-- Bouton Ajouter -->
+    <button
+      class="flex bg-green px-4 py-2 rounded gap-2 text-lg"
+      (click)="closeForm(true)"
+    >
+      <p>+</p>
+      <p>Add new Product</p>
+    </button>
+  </div>
+
+  <!-- Tableau des produits -->
+  <div
+    class="flex flex-col bg-primary w-full rounded-xl text-white h-[90%] overflow-y-scroll"
+  > 
+    <table class="overflow-y-auto w-full">
+      <thead>
+        <tr>
+          <th>Produits</th>
+          <th>Quantité</th>
+          <th>Prix</th>
+          <th>Categorie</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of filteredProducts">
+          <td class="flex items-center justify-start gap-3">
+            <!-- Remplacez la ligne qui cause l'erreur par ceci -->
+            <img *ngIf="product?.image" [src]="product.image" [alt]="product.nom" class="w-12 h-12 rounded">
+            <img *ngIf="!product?.image" src="chemin/vers/image/par/defaut.png" class="w-12 h-12 rounded" [alt]="product.nom">
+            <p>{{ product.nom }}</p>
+          </td>
+          <td>{{ product.quantite }}</td>
+          <td>{{ product.prix }}</td>
+          <td>{{ product.categorie }}</td>
+          <td>
+            <p
+            class="p-2 rounded font-bold text-lg text-white"
+            [ngClass]="{
+              'bg-green': product.statut === 'SUFFISANT',
+              'bg-red': product.statut !== 'SUFFISANT'
+            }"
+          >
+            {{ product.statut }}
+          </p>
+          </td>
+          <td class="text-center relative">
+            <!-- Trois points pour les actions -->
+            <div class="dropdown dropdown-left text-primary">
+              <div tabindex="0" role="button" class="text-white">...</div>
+              <ul tabindex="0" class="dropdown-content menu bg-white rounded-lg z-[1] w-52 p-2 shadow-lg">
+                <li>
+                  <a 
+                    (click)="deleteProduct(product.id)" 
+                    class="flex items-center px-4 py-2 text-red-500 hover:bg-red-50 rounded-md transition-colors duration-200"
+                  >
+                    <i class="fas fa-trash-alt w-5"></i>
+                    <span class="text-base text-red">Supprimer</span>
+                  </a>
+                </li>
+                <hr>
+                <li>
+                  <a 
+                    (click)="editProduct(product)" 
+                    class="flex items-center px-4 py-2 text-blue-500 hover:bg-blue-50 rounded-md transition-colors duration-200"
+                  >
+                    <i class="fas fa-edit w-5"></i>
+                    <span class="text-base text-black">Modifier</span>
+                  </a>
+                </li>
+                <div class="h-px bg-gray-200 my-2"></div>
+                <!-- <li>
+                  <a 
+                    class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 rounded-md transition-colors duration-200"
+                  >
+                    <i class="fas fa-box w-5"></i>
+                    <span class="text-base">Approvisionner</span>
+                  </a>
+                </li> -->
+              </ul>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <app-product-form
+  *ngIf="showProductForm()"
+  [productToEdit]="selectedProduct"
+  (closed)="closeForm(!$event)"
+  (productCreated)="handleProductCreated($event)"
+  (productUpdated)="handleProductUpdated($event)"
+  ></app-product-form>
+</div>
