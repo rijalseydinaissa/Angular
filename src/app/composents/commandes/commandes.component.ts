@@ -39,7 +39,6 @@ export class CommandesComponent implements OnInit {
   ngOnInit(): void {
     this.loadCommandes();
     this.filteredCommandes = [...this.commandes];
-    this.filterCommandes();
   }
   
   loadCommandes(): void {
@@ -61,11 +60,12 @@ export class CommandesComponent implements OnInit {
 
   filterCommandes() {
     this.filteredCommandes = this.commandes.filter(commande => {
-      const matchesClient =
-        this.searchClient === '' || commande.client.toLowerCase().includes(this.searchClient.toLowerCase());
-        const matchesDate = this.filterDate
-        ? this.formatDate(commande.date) === this.filterDate
-        : true;
+      const matchesClient = this.searchClient === '' || 
+        commande.client.toLowerCase().includes(this.searchClient.toLowerCase());
+  
+      const commandeFormattedDate = this.formatDate(commande.date);
+      const matchesDate = this.filterDate ? commandeFormattedDate === this.filterDate : true;
+  
       return matchesClient && matchesDate;
     });
   }
@@ -109,7 +109,7 @@ export class CommandesComponent implements OnInit {
     });
   }
   private formatDate(dateStr: string): string {
-    const [day, month, year] = dateStr.split('/');
-    return `${year}-${month}-${day}`;
+    const date = new Date(dateStr);
+    return date.toISOString().split('T')[0]; // Format YYYY-MM-DD
   }
 }

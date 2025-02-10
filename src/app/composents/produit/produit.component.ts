@@ -34,10 +34,44 @@ export class ProduitComponent implements OnInit {
  products: Product[] = [];
  categories: string[] = [];
 
+ pageSize=8;
+ currentPage=1;
+ totalPages=0;
+
  editProduct(product : Product){
   this.selectedProduct = product,
   this.showProductForm.set(true);
  }
+updateTotalPages() {
+  this.totalPages=Math.ceil(this.filteredProducts.length/this.pageSize);
+}
+
+get paginatedProducts() {
+  const startIndex = (this.currentPage - 1) * this.pageSize;
+  const endIndex = startIndex + this.pageSize;
+  return this.filteredProducts.slice(startIndex, endIndex);
+}
+changePage(page: number) {
+  if(page >=1 && page <=this.totalPages){
+    this.currentPage=page;
+  }
+}
+getVisiblePages(): number[] {
+  if (this.totalPages <= 0) return [];
+  let start = Math.max(1, this.currentPage - 1);
+  let end = Math.min(this.totalPages, this.currentPage + 1);
+  if (this.currentPage <= 2) {
+    end = Math.min(4, this.totalPages);
+  }
+  if (this.currentPage >= this.totalPages - 1) {
+    start = Math.max(1, this.totalPages - 3);
+  }
+  if (end < start) end = start;
+  return Array.from(
+    { length: end - start + 1 }, 
+    (_, i) => start + i
+  );
+}
 
  constructor(private produitService: ProduitService) {}
 
@@ -46,8 +80,10 @@ export class ProduitComponent implements OnInit {
      this.products = data;
      this.filteredProducts = this.products;
      this.categories = Array.from(new Set(data.map((product: { categorie: any; }) => product.categorie)));
+     this.updateTotalPages();
    });
  }
+
 
  filterProducts() {
   if (!this.products) {
@@ -68,6 +104,8 @@ export class ProduitComponent implements OnInit {
     
     return matchesSearch && matchesCategory;
   });
+  this.updateTotalPages();
+  this.currentPage=1;
 }
 deleteProduct(productId: number) {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {

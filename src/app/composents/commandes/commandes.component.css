@@ -24,3 +24,14 @@
     background-color: var(--color-danger);
     color: #fff;
   }
+  .card {
+    width: 100%;
+    min-height: 180px; /* Ajustable selon ton besoin */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+}
