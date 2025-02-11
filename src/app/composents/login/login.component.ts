@@ -31,16 +31,16 @@ export class LoginComponent {
     this.close.set(true);
   }
 
-  handleSubmit() {
-    this.produitService
-      .login(this.username, this.password)
-      .subscribe((data) => {
-        this.response = data;
-      });
+  // handleSubmit() {
+  //   this.produitService
+  //     .login(this.username, this.password)
+  //     .subscribe((data) => {
+  //       this.response = data;
+  //     });
 
-    if (this.response != '') {
-      this.close.set(true);
-      this.router.navigate(['/dashboard']);
-    }
-  }
+  //   if (this.response != '') {
+  //     this.close.set(true);
+  //     this.router.navigate(['/dashboard']);
+  //   }
+  // }
 }

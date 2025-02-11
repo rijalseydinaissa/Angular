@@ -1,3 +1,5 @@
+import { PaginationService } from './pagination.service';
+import { ApiService } from './api.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
@@ -18,18 +20,21 @@ interface ProductResponse {
   providedIn: 'root'
 })
 export class ProduitService {
-  private baseUrl = 'http://localhost:8081';
+  // private baseUrl = 'http://localhost:8081';
+  private endpoint = 'produits';
   private productsSubject = new BehaviorSubject<any[]>([]);
-  products$ = this.productsSubject.asObservable();
+  products = this.productsSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor(
+    private apiService : ApiService
+    ) {
     this.loadProducts();
   }
 
   public loadProducts() {
-    this.http.get<any[]>(this.baseUrl + "/produits").subscribe(data => {
+    this.apiService.get<ProductResponse[]>(this.endpoint).subscribe(data => {
       // S'assurer que chaque produit a une propriété image
-      const productsWithImage = data.map(product => ({
+      const productsWithImage = data.map((product: { image: any; }) => ({
         ...product,
         image: product.image || null
       }));
@@ -37,19 +42,23 @@ export class ProduitService {
     });
   }
 
-  public getProducts(): Observable<any> {
-    return this.products$;
+  public getProducts(): Observable<ProductResponse[]> {
+    return this.products;
   }
   deleteProduct(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/produits/${id}`);
+    return this.apiService.delete(`${this.endpoint}/${id}`).pipe(
+      tap(() => {
+        const currentProducts = this.productsSubject.getValue();
+        this.productsSubject.next(currentProducts.filter(product => product.id !== id));
+      })
+    );
   }
-
-  public login(username: string, password: string): Observable<any> {
-    return this.http.post<any>(this.baseUrl + "/login", { username, password });
-  }
+  // public login(username: string, password: string): Observable<any> {
+  //   return this.http.post<any>(this.baseUrl + "/login", { username, password });
+  // }
 // Dans ProduitService
 updateProduct(id: number, productData: any, imageFile: File | null): Observable<any> {
-  return this.http.put<ProductResponse>(`${this.baseUrl}/produits/${id}`, productData).pipe(
+  return this.apiService.put<ProductResponse>(`${this.endpoint}/${id}`, productData).pipe(
     map(response => {
       // Si la réponse est null, retournons les données envoyées
       if (!response) {
@@ -82,7 +91,7 @@ updateProduct(id: number, productData: any, imageFile: File | null): Observable<
 }
  // produit.service.ts
  public createProductWithImage(productData: any, imageFile: File | null): Observable<ProductResponse> {
-  return this.http.post<ProductResponse>(this.baseUrl + "/produits", productData).pipe(
+  return this.apiService.post<ProductResponse>(this.endpoint, productData).pipe(
     switchMap(response => {
       if (imageFile && response.id) {
         return this.uploadProductImage(response.id, imageFile).pipe(
@@ -101,7 +110,7 @@ updateProduct(id: number, productData: any, imageFile: File | null): Observable<
   public uploadProductImage(productId: number, imageFile: File): Observable<{url: string}> {
     const formData = new FormData();
     formData.append('image', imageFile);
-    return this.http.post<{url: string}>(`${this.baseUrl}/produits/${productId}/image`, formData);
+    return this.apiService.post<{url: string}>(`${this.endpoint}/${productId}/image`, formData);
 }
 }
 

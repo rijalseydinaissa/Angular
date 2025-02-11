@@ -2,17 +2,22 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { ApiService } from './api.service';
 import { ProduitService } from './produit.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommandeService {
-  private apiURL = "http://localhost:8081";
+  // private apiURL = "http://localhost:8081";
+  private endpoint = 'commandes'
+  private produitEndpoint = 'produits';
   private commandesSubject = new BehaviorSubject<any[]>([]);
   commandes$ = this.commandesSubject.asObservable();
 
-  constructor(private http: HttpClient, private produitService: ProduitService) {
+  constructor(
+    private apiService: ApiService, 
+    private produitService: ProduitService) {
     this.loadInitialCommandes();
   }
   
@@ -23,7 +28,7 @@ export class CommandeService {
   }
 
   private loadInitialCommandes(): void {
-    this.http.get<any[]>(`${this.apiURL}/commandes`)
+    this.apiService.get<any[]>(`${this.endpoint}`)
       .subscribe(commandes => {
         const sortedCommandes = this.sortCommandesByDate(commandes);
         this.commandesSubject.next(sortedCommandes);
@@ -35,12 +40,12 @@ export class CommandeService {
   }
 
    updateCommandeStatus(id: number, status: string) {
-    const url = `${this.apiURL}/commandes/${id}/status`;
-    return this.http.patch(url, { status });
+    const url = `${this.endpoint}/${id}/status`;
+    return this.apiService.patch(url, { status });
   }
   public deleteCommande(id: number): Observable<void> {
-    const url = `${this.apiURL}/commandes/${id}`;
-    return this.http.delete<void>(url).pipe(
+    const url = `${this.endpoint}/${id}`;
+    return this.apiService.delete<void>(url).pipe(
       tap(() => {
         // Mettre à jour le BehaviorSubject après la suppression
         const currentCommandes = this.commandesSubject.value;
@@ -52,7 +57,7 @@ export class CommandeService {
 
 
   public createCommande(commandeData: any): Observable<any> {
-    return this.http.post(`${this.apiURL}/commandes`, commandeData)
+    return this.apiService.post(`${this.endpoint}`, commandeData)
       .pipe(
         tap(newCommande => {
           const currentCommandes = this.commandesSubject.value;
@@ -63,6 +68,6 @@ export class CommandeService {
   }
 
   public getProduits(): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiURL}/produits`);
+    return this.apiService.get<any[]>(`${this.endpoint}/${this.produitEndpoint}`);
   }
 }

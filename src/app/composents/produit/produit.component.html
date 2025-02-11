@@ -94,11 +94,11 @@
     </table>
 
     <!-- Contrôles de pagination -->
-    <div class="flex justify-center items-center gap-2 p-4 bg-primary text-white">
+    <div class="flex justify-end items-center gap-2 p-4 bg-primary text-white">
       <!-- Première page -->
       <button 
         *ngIf="currentPage > 3"
-        class="px-3 py-1 rounded  border hover:bg-gray-100"
+        class="px-4 py-2 text-lg font-bold rounded  border hover:bg-gray-100"
         (click)="changePage(1)"
       >
         1
@@ -110,7 +110,7 @@
       <!-- Pages autour de la page courante -->
       <button 
         *ngFor="let page of getVisiblePages()"
-        class="px-3 py-1 rounded border hover:bg-gray-100 transition-colors duration-200"
+        class="px-4 py-2 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
         [ngClass]="{
           'bg-green text-white border-green': currentPage === page,
           'text-white border-[#ffffff33] hover:bg-[#ffffff1a]': currentPage !== page
@@ -126,7 +126,7 @@
       <!-- Dernière page -->
       <button 
         *ngIf="currentPage < totalPages - 2"
-        class="px-3 py-1 rounded border hover:bg-gray-100"
+        class="px-4 py-2 text-lg font-bold rounded border hover:bg-gray-100"
         (click)="changePage(totalPages)"
       >
         {{ totalPages }}
