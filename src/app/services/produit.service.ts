@@ -86,6 +86,7 @@ updateProduct(id: number, productData: any, imageFile: File | null): Observable<
         product.id === id ? finalProduct : product
       );
       this.productsSubject.next(updatedProducts);
+      console.log('Produits mis à jour :', this.productsSubject.getValue());
     })
   );
 }

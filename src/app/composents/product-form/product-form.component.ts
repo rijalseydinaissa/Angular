@@ -109,13 +109,10 @@ private updateProduct(productData: any) {
       next: (response) => {
         // Utiliser les données envoyées si la réponse est null
         const updatedProduct = response || updateData;
-        
         // Émettre la mise à jour
         this.productUpdated.emit(updatedProduct);
-        
         // Forcer le rechargement des données
         this.produitService.loadProducts();
-        
         this.handleSuccess(updatedProduct, 'mis à jour');
       },
       error: (error) => this.handleError(error)

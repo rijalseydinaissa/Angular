@@ -1,6 +1,6 @@
 import { PaginationService } from './../../services/pagination.service';
 import { ProduitService } from './../../services/produit.service';
-import { Component, Signal, signal } from '@angular/core';
+import { Component, ElementRef, Signal, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { CommonModule } from '@angular/common';
@@ -33,9 +33,21 @@ export class ProduitComponent implements OnInit {
   products: Product[] = [];
   categories: string[] = [];
 
+
   pageSize = 8;
   currentPage = 1;
   totalPages = 0;
+  // @ViewChild('dropdownMenu') dropdownMenu: ElementRef | undefined;
+
+// closeDropdown(event: Event) {
+//   event.stopPropagation();
+//   // Retirer le focus du menu déroulant
+//   if (this.dropdownMenu?.nativeElement) {
+//     this.dropdownMenu.nativeElement.blur();
+//   }
+//   // Appeler editProduct
+//   this.editProduct(this.products.find(p => p.id === this.selectedProduct?.id)!);
+// }
 
   constructor(private produitService: ProduitService, private paginationService: PaginationService) {}
 
