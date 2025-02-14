@@ -78,13 +78,13 @@
                   </a>
                 </li>
                 <hr>
-                <li>
+                <li #dropdownOpen>
                   <!-- <a (click)="editProduct(product); closeDropdown($event)"  -->
-                  <a (click)="editProduct(product); " 
-                     class="flex items-center px-4 py-2 text-blue-500 hover:bg-blue-50 rounded-md transition-colors duration-200">
-                    <i class="fas fa-edit w-5"></i>
-                    <span class="text-base text-black">Modifier</span>
-                  </a>
+                  <a (click)="editProduct(product); closeDropdown()" 
+                    class="flex items-center px-4 py-2 text-blue-500 hover:bg-blue-50 rounded-md transition-colors duration-200">
+                   <i class="fas fa-edit w-5"></i>
+                   <span class="text-base text-black">Modifier</span>
+                 </a>
                 </li>
                 <div class="h-px bg-gray-200 my-2"></div>
               </ul>

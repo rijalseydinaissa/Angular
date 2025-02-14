@@ -32,22 +32,14 @@ export class ProduitComponent implements OnInit {
   filteredProducts: Product[] = [];
   products: Product[] = [];
   categories: string[] = [];
+  dropdownOpen: boolean = false;
+
 
 
   pageSize = 8;
   currentPage = 1;
   totalPages = 0;
-  // @ViewChild('dropdownMenu') dropdownMenu: ElementRef | undefined;
-
-// closeDropdown(event: Event) {
-//   event.stopPropagation();
-//   // Retirer le focus du menu déroulant
-//   if (this.dropdownMenu?.nativeElement) {
-//     this.dropdownMenu.nativeElement.blur();
-//   }
-//   // Appeler editProduct
-//   this.editProduct(this.products.find(p => p.id === this.selectedProduct?.id)!);
-// }
+ 
 
   constructor(private produitService: ProduitService, private paginationService: PaginationService) {}
 
@@ -59,6 +51,11 @@ export class ProduitComponent implements OnInit {
       this.updateTotalPages();
     });
   }
+
+  closeDropdown() {
+    this.dropdownOpen = true;
+  }
+  
 //pagination
   updateTotalPages() {
     this.totalPages = this.paginationService.getTotalPages(this.filteredProducts, this.pageSize);
