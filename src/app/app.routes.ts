@@ -4,6 +4,7 @@ import { DashboardComponent } from './composents/dashboard/dashboard.component';
 import { CommandesComponent } from './composents/commandes/commandes.component';
 import { StockComponent } from './composents/stock/stock.component';
 import { LoginComponent } from './composents/login/login.component';
+import { CaiseComponent } from './composents/caise/caise.component';
 
 
 export const routes: Routes = [
@@ -13,4 +14,5 @@ export const routes: Routes = [
     {path:"stock",component:StockComponent},
     {path:"login",component:LoginComponent},
     {path:"register",component:LoginComponent},
+    {path:"caise",component:CaiseComponent},
 ];
