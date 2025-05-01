@@ -32,11 +32,13 @@
       </div>
       <div class="input-flex">
         <div class="input-group">
-          <label>Catégorie</label>
-          <select formControlName="categorie" class="p-2 rounded text-black">
-            <option value="INFORMATIQUE">INFORMATIQUE</option>
-            <option value="ELECTRONIQUE">ELECTRONIQUE</option>
+          <select formControlName="categorieId" class="p-4 rounded text-black">
+            <option value="" disabled>Sélectionnez une catégorie</option>
+            <option *ngFor="let categorie of categories" [value]="categorie.id">{{ categorie.nom }}</option>
           </select>
+          <small *ngIf="productForm.get('categorieId')?.invalid && productForm.get('categorieId')?.touched">
+            Veuillez sélectionner une catégorie.
+          </small>
         </div>
         <div class="input-group">
           <label>Image</label>

@@ -3,6 +3,7 @@ import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AlertService } from '../../services/alert.service';
+import { CategorieResponse ,CategorieService } from '../../services/categorie.service';
 
 @Component({
  selector: 'app-product-form',
@@ -22,28 +23,33 @@ export class ProductFormComponent {
  errorMessage: string = '';
  imageFile: File | null = null;
  isEditMode = false;
+ categories: CategorieResponse[] = [];
 
- constructor(private fb: FormBuilder, private produitService: ProduitService,private alertService: AlertService) {
+ constructor(private fb: FormBuilder, private produitService: ProduitService,private alertService: AlertService,private categorieService: CategorieService) {
    this.productForm = this.fb.group({
      nom: ['', [Validators.required]],
      prixAchat: ['', [Validators.required, Validators.min(1)]],
      quantite: ['', [Validators.required, Validators.min(1)]],
-     categorie: ['', [Validators.required]],
+     categorieId: ['', [Validators.required]],
      prix: ['', [Validators.required, Validators.min(1)]],
    });
  }
 
  ngOnInit(){
-   if (this.productToEdit) {
-     this.isEditMode = true;
-     this.productForm.patchValue({
-      nom: this.productToEdit.nom,
-      prixAchat: this.productToEdit.prixAchat,
-      quantite: this.productToEdit.quantite,
-      categorie: this.productToEdit.categorie,
-      prix: this.productToEdit.prix,
-     });
-   }
+   this.categorieService.getCategories().subscribe(categories => {
+     this.categories=categories;
+
+     if (this.productToEdit) {
+      this.isEditMode = true;
+      this.productForm.patchValue({
+       nom: this.productToEdit.nom,
+       prixAchat: this.productToEdit.prixAchat,
+       quantite: this.productToEdit.quantite,
+       categorie: this.productToEdit.categorie,
+       prix: this.productToEdit.prix,
+      });
+    }
+   })
  }
 
  handleClose() {
@@ -62,12 +68,25 @@ export class ProductFormComponent {
   if (this.productForm.valid) {
     this.alertService.showLoading();
 
+     // Trouver l'objet catégorie complet basé sur l'ID sélectionné
+     const categorieId = Number(this.productForm.value.categorieId);
+     const categorie = this.categories.find(cat => cat.id === categorieId);
+
+     if (!categorie) {
+       this.alertService.showError('Catégorie invalide');
+       return;
+     }
+
+
     const productData = {
       ...this.productForm.value,
       prixAchat: Number(this.productForm.value.prixAchat),
       prix: Number(this.productForm.value.prix),
-      quantite: Number(this.productForm.value.quantite)
+      quantite: Number(this.productForm.value.quantite),
+      categorie: categorie // Utiliser l'objet catégorie complet
     };
+    delete productData.categorieId; // Supprimer l'ID de la catégorie du formulaire
+    
     if (this.isEditMode) {
       this.updateProduct(productData);
     } else {

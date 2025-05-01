@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable } from 'rxjs';
 import { BehaviorSubject, tap } from 'rxjs';
 import { switchMap, map, of } from 'rxjs';
+import { CategorieResponse } from './categorie.service';
 
 interface ProductResponse {
   id: number;
@@ -12,7 +13,7 @@ interface ProductResponse {
   prix: number;
   prixAchat: number;
   quantite: number;
-  categorie: string;
+  categorie: CategorieResponse;
   image: string | null;
   statut: string;
 }

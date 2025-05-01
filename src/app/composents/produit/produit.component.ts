@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { CommonModule } from '@angular/common';
 import { OnInit } from '@angular/core';
+import { CategorieResponse ,CategorieService } from '../../services/categorie.service';
 
 interface Product {
  id: number;
@@ -12,7 +13,7 @@ interface Product {
  nom: string;
  quantite: number;
  prix: number;
- categorie: string;
+ categorie: CategorieResponse;
  statut: string;
 }
 
@@ -31,7 +32,7 @@ export class ProduitComponent implements OnInit {
   action: boolean = false;
   filteredProducts: Product[] = [];
   products: Product[] = [];
-  categories: string[] = [];
+  categories: CategorieResponse[] = [];
   dropdownOpen: boolean = false;
 
 
@@ -41,14 +42,17 @@ export class ProduitComponent implements OnInit {
   totalPages = 0;
  
 
-  constructor(private produitService: ProduitService, private paginationService: PaginationService) {}
+  constructor(private produitService: ProduitService, private paginationService: PaginationService, private categorieService: CategorieService) {}
 
   ngOnInit(): void {
     this.produitService.getProducts().subscribe(data => {
       this.products = data;
       this.filteredProducts = this.products;
-      this.categories = Array.from(new Set(data.map((product: { categorie: any }) => product.categorie)));
+      // this.categories = Array.from(new Set(data.map((product: { categorie: any }) => product.categorie.nom)));
       this.updateTotalPages();
+    });
+    this.categorieService.getCategories().subscribe(categories=>{
+      this.categories=categories
     });
   }
 
@@ -80,7 +84,7 @@ export class ProduitComponent implements OnInit {
     this.selectedProduct = product,
     this.showProductForm.set(true);
    }
-  filterProducts() {
+   filterProducts() {
     if (!this.products) {
       this.filteredProducts = [];
       return;
@@ -90,11 +94,13 @@ export class ProduitComponent implements OnInit {
     this.filteredProducts = this.products.filter((product) => {
       if (!product) return false;
 
+      // Recherche par nom de produit
       const matchesSearch = product.nom ? 
         product.nom.toLowerCase().includes(searchLower) : false;
 
+      // Filtre par catégorie
       const matchesCategory = this.selectedFilter === 'all' || 
-        product.categorie === this.selectedFilter;
+        product.categorie.id.toString() === this.selectedFilter;
 
       return matchesSearch && matchesCategory;
     });
@@ -118,7 +124,11 @@ export class ProduitComponent implements OnInit {
   }
 
   handleProductCreated(newProduct: Product) {
-    this.filterProducts();
+    // Rafraîchir la liste des produits après une création
+    this.produitService.getProducts().subscribe(data => {
+      this.products = data;
+      this.filterProducts();
+    });
   }
 
   handleProductUpdated(updatedProduct: Product) {
