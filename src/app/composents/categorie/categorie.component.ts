@@ -1,0 +1,119 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CategorieService, CategorieResponse } from '../../services/categorie.service';
+import { AlertService } from '../../services/alert.service';
+
+interface Categorie {
+  id: number;
+  nom: string;
+}
+@Component({
+  selector: 'app-categorie-management',
+  templateUrl: './categorie.component.html',
+  styleUrls: ['./categorie.component.css'],
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule]
+})
+export class CategorieComponent implements OnInit {
+  categories: CategorieResponse[] = [];
+  categorieForm: FormGroup;
+  isEditMode = false;
+  currentCategorieId: number | null = null;
+  selectedCategorie: Categorie | null = null;
+
+  constructor(
+    private categorieService: CategorieService,
+    private fb: FormBuilder,
+    private alertService: AlertService
+  ) {
+    this.categorieForm = this.fb.group({
+      nom: ['', [Validators.required]]
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadCategories();
+  }
+
+  loadCategories(): void {
+    this.categorieService.getCategories().subscribe(
+      categories => {
+        this.categories = categories;
+      },
+      error => {
+        this.alertService.showError('Erreur lors du chargement des catégories');
+      }
+    );
+  }
+
+  onSubmit(): void {
+    if (this.categorieForm.invalid) {
+      return;
+    }
+
+    this.alertService.showLoading();
+
+    if (this.isEditMode && this.currentCategorieId) {
+      this.categorieService.updateCategorie(this.currentCategorieId, this.categorieForm.value).subscribe(
+        response => {
+          this.handleSuccess('Catégorie mise à jour avec succès');
+          this.resetForm();
+        },
+        error => {
+          this.handleError('Erreur lors de la mise à jour de la catégorie');
+        }
+      );
+    } else {
+      this.categorieService.createCategorie(this.categorieForm.value).subscribe(
+        response => {
+          this.handleSuccess('Catégorie créée avec succès');
+          this.resetForm();
+        },
+        error => {
+          this.handleError('Erreur lors de la création de la catégorie');
+        }
+      );
+    }
+  }
+
+  editCategorie(categorie: CategorieResponse): void {
+    this.isEditMode = true;
+    this.currentCategorieId = categorie.id;
+    this.categorieForm.patchValue({
+      nom: categorie.nom
+    });
+  }
+
+  deleteCategorie(id: number): void {
+      if (confirm('Etes-vous sur de vouloir supprimer cette catégorie ?')) {
+        // this.alertService.showLoading();
+        this.categorieService.deleteCategorie(id).subscribe(
+          () => {
+            this.handleSuccess('Catégorie supprimée avec succès');
+          },
+          error => {
+            this.handleError('Erreur lors de la suppression. Cette catégorie est peut-être utilisée par des produits.');
+          }
+        );
+      }
+    ;
+  }
+
+  resetForm(): void {
+    this.isEditMode = false;
+    this.currentCategorieId = null;
+    this.categorieForm.reset();
+  }
+
+  private handleSuccess(message: string): void {
+    this.alertService.closeAlert();
+    this.alertService.showSuccess(message);
+    this.loadCategories(); // Actualiser la liste
+  }
+
+  private handleError(message: string): void {
+    this.alertService.closeAlert();
+    this.alertService.showError(message);
+  }
+}

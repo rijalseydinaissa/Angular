@@ -9,9 +9,11 @@ import { AuthGuard } from './guards/auth.guard';
 import { RegisterComponent } from './composents/register/register.component';
 import { NotAuthorizedComponent } from './composents/not-authorized/not-authorized.component';
 import { RoleGuard } from './guards/role.guard';
+import { CategorieComponent } from './composents/categorie/categorie.component';
 
 export const routes: Routes = [
   { path: "login", component: LoginComponent },
+  { path: "categories", component: CategorieComponent },
   
   // Produit page - only accessible to ADMIN and SERVEUR
   {

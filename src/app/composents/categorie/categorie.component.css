@@ -1,0 +1,26 @@
+/* Styles pour les tables */
+table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    padding: 8px;
+  }
+  
+  /* Styles pour les boutons */
+  button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  /* Styles pour les formulaires */
+  input.ng-invalid.ng-touched {
+    border: 1px solid red;
+  }
+  
+  /* Styles pour les petites notifications d'erreur */
+  small {
+    color: #f56565;
+    font-size: 0.75rem;
+  }

@@ -22,6 +22,7 @@ export class CategorieService {
   public loadCategories() {
     this.apiService.get<CategorieResponse[]>(this.endpoint).subscribe(data => {
       this.categoriesSubject.next(data);
+      console.log(data);
     });
   }
 

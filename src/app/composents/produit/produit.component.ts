@@ -53,6 +53,8 @@ export class ProduitComponent implements OnInit {
     });
     this.categorieService.getCategories().subscribe(categories=>{
       this.categories=categories
+      console.log(categories);
+      
     });
   }
 
