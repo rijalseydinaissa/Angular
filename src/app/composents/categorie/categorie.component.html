@@ -1,71 +1,112 @@
+
 <div class="container mx-auto p-4">
-    <div class="bg-secondary rounded-lg p-6 shadow-lg">
-      <h2 class="text-2xl font-bold mb-6 text-white">{{isEditMode ? 'Modifier' : 'Ajouter'}} une catégorie</h2>
-      
-      <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()" class="mb-8">
-        <div class="mb-4">
-          <label for="nom" class="block text-white mb-2">Nom de la catégorie</label>
-          <input 
-            type="text" 
-            id="nom" 
-            formControlName="nom" 
-            class="w-full p-2 rounded text-black"
-            placeholder="Entrez le nom de la catégorie">
-          <small *ngIf="categorieForm.get('nom')?.invalid && categorieForm.get('nom')?.touched" class="text-red-400">
-            Le nom de la catégorie est requis.
-          </small>
-        </div>
-        
-        <div class="flex space-x-2">
-          <button 
-            type="submit" 
-            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            [disabled]="categorieForm.invalid">
-            {{isEditMode ? 'Mettre à jour' : 'Ajouter'}}
-          </button>
-          
-          <button 
-            *ngIf="isEditMode"
-            type="button" 
-            class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-            (click)="resetForm()">
-            Annuler
-          </button>
-        </div>
-      </form>
-      
-      <h3 class="text-xl font-bold mb-4 text-white">Liste des catégories</h3>
-      
-      <div *ngIf="categories.length === 0" class="text-white">
-        Aucune catégorie trouvée.
+  <div class="bg-secondary rounded-lg p-6 shadow-lg">
+    <h2 class="text-2xl font-bold mb-6 text-white">{{isEditMode ? 'Modifier' : 'Ajouter'}} une catégorie</h2>
+    <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()" class="mb-8">
+      <div class="mb-4">
+        <label for="nom" class="block text-white mb-2">Nom de la catégorie</label>
+        <input
+          type="text"
+          id="nom"
+          formControlName="nom"
+          class="w-full p-2 rounded text-black"
+          placeholder="Entrez le nom de la catégorie">
+        <small *ngIf="categorieForm.get('nom')?.invalid && categorieForm.get('nom')?.touched" class="text-red-400">
+          Le nom de la catégorie est requis.
+        </small>
       </div>
-      
-      <table *ngIf="categories.length > 0" class="w-full text-white">
-        <thead>
-          <tr class="border-b border-gray-600">
-            <!-- <th class="text-left py-2">ID</th> -->
-            <th class="text-left py-2">Nom</th>
-            <th class="text-right py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let categorie of categories" class="border-b border-gray-700">
-            <!-- <td class="py-2">{{categorie.id}}</td> -->
-            <td class="py-2">{{categorie.nom}}</td>
-            <td class="py-2 text-right">
-              <button 
-                (click)="editCategorie(categorie)"
-                class="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-700 mr-1">
-                Modifier
-              </button>
-              <button 
-                (click)="deleteCategorie(categorie.id)"
-                class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">
-                Supprimer
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="flex space-x-2">
+        <button
+          type="submit"
+          class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          [disabled]="categorieForm.invalid">
+          {{isEditMode ? 'Mettre à jour' : 'Ajouter'}}
+        </button>
+        <button
+          *ngIf="isEditMode"
+          type="button"
+          class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+          (click)="resetForm()">
+          Annuler
+        </button>
+      </div>
+    </form>
+    
+    <h3 class="text-xl font-bold mb-4 text-white">Liste des catégories</h3>
+    <div *ngIf="categories.length === 0" class="text-white">
+      Aucune catégorie trouvée.
+    </div>
+    
+    <table *ngIf="categories.length > 0" class="w-full text-white">
+      <thead>
+        <tr class="border-b border-gray-600">
+          <!-- <th class="text-left py-2">ID</th> -->
+          <th class="text-left py-2">Nom</th>
+          <th class="text-right py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let categorie of paginedCategories" class="border-b border-gray-700">
+          <!-- <td class="py-2">{{categorie.id}}</td> -->
+          <td class="py-2">{{categorie.nom}}</td>
+          <td class="py-2 text-right">
+            <button
+              (click)="editCategorie(categorie)"
+              class="bg-blue-600 text-white px-2 py-1 rounded text-sm hover:bg-blue-700 mr-1">
+              Modifier
+            </button>
+            <button
+              (click)="deleteCategorie(categorie.id)"
+              class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700">
+              Supprimer
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <!-- Pagination -->
+    <div *ngIf="categories.length > 0" class="flex justify-center mt-4">
+      <nav>
+        <ul class="flex space-x-1">
+          <!-- Bouton précédent -->
+          <li>
+            <button 
+              (click)="changePage(currentPage - 1)" 
+              [disabled]="currentPage === 1"
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === 1 ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              &laquo;
+            </button>
+          </li>
+          
+          <!-- Pages numérotées -->
+          <li *ngFor="let page of getVisiblePages()">
+            <button 
+              (click)="changePage(page)" 
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === page ? 'bg-green text-white' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              {{page}}
+            </button>
+          </li>
+          
+          <!-- Bouton suivant -->
+          <li>
+            <button 
+              (click)="changePage(currentPage + 1)" 
+              [disabled]="currentPage === totalPages"
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === totalPages ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              &raquo;
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    
+    <!-- Indicateur de page -->
+    <div *ngIf="categories.length > 0" class="mt-2 text-center text-white text-sm">
+      Page {{currentPage}} sur {{totalPages}}
     </div>
   </div>
+</div>

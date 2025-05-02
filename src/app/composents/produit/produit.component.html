@@ -94,44 +94,48 @@
       </tbody>
     </table>
 
-    <!-- Contrôles de pagination -->
-    <div class="flex justify-end items-center gap-2 p-4 bg-primary text-white">
-      <!-- Première page -->
-      <button 
-        *ngIf="currentPage > 3"
-        class="px-4 py-2 text-lg font-bold rounded  border hover:bg-gray-100"
-        (click)="changePage(1)"
-      >
-        1
-      </button>
-
-      <!-- Points de suspension au début -->
-      <span *ngIf="currentPage > 3">...</span>
-
-      <!-- Pages autour de la page courante -->
-      <button 
-        *ngFor="let page of getVisiblePages()"
-        class="px-4 py-2 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
-        [ngClass]="{
-          'bg-green text-white border-green': currentPage === page,
-          'text-white border-[#ffffff33] hover:bg-[#ffffff1a]': currentPage !== page
-        }"
-        (click)="changePage(page)"
-      >
-        {{ page }}
-      </button>
-
-      <!-- Points de suspension à la fin -->
-      <span *ngIf="currentPage < totalPages - 2">...</span>
-
-      <!-- Dernière page -->
-      <button 
-        *ngIf="currentPage < totalPages - 2"
-        class="px-4 py-2 text-lg font-bold rounded border hover:bg-gray-100"
-        (click)="changePage(totalPages)"
-      >
-        {{ totalPages }}
-      </button>
+     <!-- Pagination -->
+     <div *ngIf="products.length > 0" class="flex justify-center mt-4">
+      <nav>
+        <ul class="flex space-x-1">
+          <!-- Bouton précédent -->
+          <li>
+            <button 
+              (click)="changePage(currentPage - 1)" 
+              [disabled]="currentPage === 1"
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === 1 ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              &laquo;
+            </button>
+          </li>
+          
+          <!-- Pages numérotées -->
+          <li *ngFor="let page of getVisiblePages()">
+            <button 
+              (click)="changePage(page)" 
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === page ? 'bg-green text-white' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              {{page}}
+            </button>
+          </li>
+          
+          <!-- Bouton suivant -->
+          <li>
+            <button 
+              (click)="changePage(currentPage + 1)" 
+              [disabled]="currentPage === totalPages"
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === totalPages ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              &raquo;
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    
+    <!-- Indicateur de page -->
+    <div *ngIf="categories.length > 0" class="mt-2 text-center text-white text-sm">
+      Page {{currentPage}} sur {{totalPages}}
     </div>
   </div>
 

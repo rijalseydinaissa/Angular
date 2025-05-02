@@ -1,3 +1,4 @@
+import { PaginationService } from './../../services/pagination.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -22,10 +23,14 @@ export class CategorieComponent implements OnInit {
   currentCategorieId: number | null = null;
   selectedCategorie: Categorie | null = null;
 
+  pageSize = 5;
+  currentPage = 1;
+  totalPages = 0;
+
   constructor(
     private categorieService: CategorieService,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,private paginationService:PaginationService
   ) {
     this.categorieForm = this.fb.group({
       nom: ['', [Validators.required]]
@@ -40,6 +45,7 @@ export class CategorieComponent implements OnInit {
     this.categorieService.getCategories().subscribe(
       categories => {
         this.categories = categories;
+        this.updateTotalPages();
       },
       error => {
         this.alertService.showError('Erreur lors du chargement des catégories');
@@ -116,4 +122,24 @@ export class CategorieComponent implements OnInit {
     this.alertService.closeAlert();
     this.alertService.showError(message);
   }
+  //pagination 
+  updateTotalPages() {
+    this.totalPages = this.paginationService.getTotalPages(this.categories, this.pageSize);
+  }
+
+  get paginedCategories(){
+    return this.paginationService.getPaginatedItems(this.categories, this.currentPage, this.pageSize);
+  }
+  changePage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
+  }
+  getVisiblePages(): number[] {
+    return this.paginationService.getVisiblePages(this.currentPage, this.totalPages);
+  }
+  //fin pagination
+
+
+
 }
