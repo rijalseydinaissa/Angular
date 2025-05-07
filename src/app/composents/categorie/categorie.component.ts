@@ -57,29 +57,30 @@ export class CategorieComponent implements OnInit {
     if (this.categorieForm.invalid) {
       return;
     }
-
+  
     this.alertService.showLoading();
-
+  
     if (this.isEditMode && this.currentCategorieId) {
-      this.categorieService.updateCategorie(this.currentCategorieId, this.categorieForm.value).subscribe(
-        response => {
+      this.categorieService.updateCategorie(this.currentCategorieId, this.categorieForm.value).subscribe({
+        next: (response) => {
           this.handleSuccess('Catégorie mise à jour avec succès');
           this.resetForm();
         },
-        error => {
-          this.handleError('Erreur lors de la mise à jour de la catégorie');
+        error: (error) => {
+          this.handleError(error?.error?.message || 'Erreur lors de la mise à jour de la catégorie');
         }
-      );
+      });
     } else {
-      this.categorieService.createCategorie(this.categorieForm.value).subscribe(
-        response => {
+      this.categorieService.createCategorie(this.categorieForm.value).subscribe({
+        next: (response) => {
           this.handleSuccess('Catégorie créée avec succès');
           this.resetForm();
         },
-        error => {
-          this.handleError('Erreur lors de la création de la catégorie');
+        error: (error) => {
+          // Utiliser le message d'erreur du serveur si disponible
+          this.handleError(error?.error?.message || 'Erreur lors de la création de la catégorie');
         }
-      );
+      });
     }
   }
 
@@ -138,6 +139,18 @@ export class CategorieComponent implements OnInit {
   getVisiblePages(): number[] {
     return this.paginationService.getVisiblePages(this.currentPage, this.totalPages);
   }
+  // changePageSize() {
+  //   // Convertir pageSize en nombre car les valeurs de select sont souvent des chaînes
+  //   this.pageSize = Number(this.pageSize);
+    
+  //   // Recalculer le nombre total de pages avec la nouvelle taille
+  //   this.updateTotalPages();
+    
+  //   // Ajuster la page courante si nécessaire
+  //   if (this.currentPage > this.totalPages) {
+  //     this.currentPage = this.totalPages || 1;
+  //   }
+  // }
   //fin pagination
 
 

@@ -66,7 +66,22 @@
     </table>
     
     <!-- Pagination -->
-    <div *ngIf="categories.length > 0" class="flex justify-center mt-4">
+    <div *ngIf="categories.length > 0" class="flex justify-end items-center mt-4">
+        <!-- Sélecteur du nombre d'éléments par page -->
+        <!-- <div class="flex items-center gap-2 text-white">
+          <span>Afficher</span>
+          <select 
+            [(ngModel)]="pageSize" 
+            (change)="changePageSize()"
+            class="px-2 py-1 bg-white text-primary rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="15">15</option>
+            <option [value]="20">20</option>
+          </select>
+          <span>par page</span>
+        </div> -->
       <nav>
         <ul class="flex space-x-1">
           <!-- Bouton précédent -->
@@ -105,8 +120,8 @@
     </div>
     
     <!-- Indicateur de page -->
-    <div *ngIf="categories.length > 0" class="mt-2 text-center text-white text-sm">
+    <!-- <div *ngIf="categories.length > 0" class="mt-2 text-center text-white text-sm">
       Page {{currentPage}} sur {{totalPages}}
-    </div>
+    </div> -->
   </div>
 </div>

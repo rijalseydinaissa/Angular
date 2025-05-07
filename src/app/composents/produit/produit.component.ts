@@ -34,6 +34,7 @@ export class ProduitComponent implements OnInit {
   products: Product[] = [];
   categories: CategorieResponse[] = [];
   dropdownOpen: boolean = false;
+  
 
 
 
@@ -52,9 +53,8 @@ export class ProduitComponent implements OnInit {
       this.updateTotalPages();
     });
     this.categorieService.getCategories().subscribe(categories=>{
-      this.categories=categories
+      this.categories=categories.filter(categories=>categories.nom!='null');
       console.log(categories);
-      
     });
   }
 
@@ -80,6 +80,19 @@ export class ProduitComponent implements OnInit {
   getVisiblePages(): number[] {
     return this.paginationService.getVisiblePages(this.currentPage, this.totalPages);
   }
+
+  // changePageSize() {
+  //   // Convertir pageSize en nombre car les valeurs de select sont souvent des chaînes
+  //   this.pageSize = Number(this.pageSize);
+    
+  //   // Recalculer le nombre total de pages avec la nouvelle taille
+  //   this.updateTotalPages();
+    
+  //   // Ajuster la page courante si nécessaire
+  //   if (this.currentPage > this.totalPages) {
+  //     this.currentPage = this.totalPages || 1;
+  //   }
+  // }
   //fin pagination
 
   editProduct(product : Product){
