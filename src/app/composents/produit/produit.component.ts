@@ -11,6 +11,7 @@ interface Product {
  id: number;
  image: string | null;
  nom: string;
+ code: string;
  quantite: number;
  prix: number;
  categorie: CategorieResponse;
@@ -81,18 +82,18 @@ export class ProduitComponent implements OnInit {
     return this.paginationService.getVisiblePages(this.currentPage, this.totalPages);
   }
 
-  // changePageSize() {
-  //   // Convertir pageSize en nombre car les valeurs de select sont souvent des chaînes
-  //   this.pageSize = Number(this.pageSize);
+  changePageSize() {
+    // Convertir pageSize en nombre car les valeurs de select sont souvent des chaînes
+    this.pageSize = Number(this.pageSize);
     
-  //   // Recalculer le nombre total de pages avec la nouvelle taille
-  //   this.updateTotalPages();
+    // Recalculer le nombre total de pages avec la nouvelle taille
+    this.updateTotalPages();
     
-  //   // Ajuster la page courante si nécessaire
-  //   if (this.currentPage > this.totalPages) {
-  //     this.currentPage = this.totalPages || 1;
-  //   }
-  // }
+    // Ajuster la page courante si nécessaire
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages || 1;
+    }
+  }
   //fin pagination
 
   editProduct(product : Product){

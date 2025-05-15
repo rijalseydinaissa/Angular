@@ -40,6 +40,7 @@
       <thead>
         <tr>
           <th>Produits</th>
+          <th>Code</th>
           <th>Quantité</th>
           <th>Prix</th>
           <th>Categorie</th>
@@ -54,6 +55,7 @@
             <img *ngIf="!product?.image" src="chemin/vers/image/par/defaut.png" class="w-12 h-12 rounded" [alt]="product.nom">
             <p>{{ product.nom }}</p>
           </td>
+          <td>{{ product.code }}</td>
           <td>{{ product.quantite }}</td>
           <td>{{ product.prix }}</td>
           <td>{{ product.categorie.nom }}</td>
@@ -75,7 +77,7 @@
                      class="flex items-center px-4 py-2 text-red-500 hover:bg-red-50 rounded-md transition-colors duration-200">
                     <i class="fas fa-trash-alt w-5"></i>
                     <span class="text-base text-red">Supprimer</span>
-                  </a>
+                  </a> 
                 </li>
                 <hr>
                 <li #dropdownOpen>

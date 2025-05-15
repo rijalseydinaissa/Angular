@@ -10,6 +10,7 @@ import { CategorieResponse } from './categorie.service';
 interface ProductResponse {
   id: number;
   nom: string;
+  code:string;
   prix: number;
   prixAchat: number;
   quantite: number;
