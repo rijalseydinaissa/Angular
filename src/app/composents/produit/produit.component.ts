@@ -37,8 +37,6 @@ export class ProduitComponent implements OnInit {
   dropdownOpen: boolean = false;
   
 
-
-
   pageSize = 8;
   currentPage = 1;
   totalPages = 0;
@@ -85,7 +83,6 @@ export class ProduitComponent implements OnInit {
   changePageSize() {
     // Convertir pageSize en nombre car les valeurs de select sont souvent des chaînes
     this.pageSize = Number(this.pageSize);
-    
     // Recalculer le nombre total de pages avec la nouvelle taille
     this.updateTotalPages();
     
@@ -97,7 +94,11 @@ export class ProduitComponent implements OnInit {
   //fin pagination
 
   editProduct(product : Product){
-    this.selectedProduct = product,
+     // Vérifiez la structure de la catégorie
+    console.log('Product to edit:', product);
+    console.log('Product category:', product.categorie);
+    
+    this.selectedProduct = {...product},
     this.showProductForm.set(true);
    }
    filterProducts() {

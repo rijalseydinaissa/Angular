@@ -45,8 +45,19 @@ export class ProductFormComponent {
        nom: this.productToEdit.nom,
        prixAchat: this.productToEdit.prixAchat,
        quantite: this.productToEdit.quantite,
-       categorie: this.productToEdit.categorie,
+       categorieId: this.productToEdit.categorie.id,
        prix: this.productToEdit.prix,
+      });
+      this.productForm.patchValue({
+        nom: this.productToEdit.nom,
+        prixAchat: this.productToEdit.prixAchat,
+        quantite: this.productToEdit.quantite,
+        categorieId: this.productToEdit.categorie.id, // Utiliser categorieId
+        prix: this.productToEdit.prix,
+      });
+      // Forcer la mise à jour du select
+      setTimeout(() => {
+        this.productForm.get('categorieId')?.updateValueAndValidity();
       });
     }
    })
@@ -119,7 +130,7 @@ private updateProduct(productData: any) {
     prixAchat: parseFloat(productData.prixAchat),
     prix: parseFloat(productData.prix),
     quantite: parseInt(productData.quantite),
-    categorie: productData.categorie,
+    categorie: { id: productData.categorie.id },
     image: this.productToEdit.image // Préserver l'image existante
   };
 
