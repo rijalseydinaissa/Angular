@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject,Observable,tap } from 'rxjs';
 import { ApiService } from './api.service';
+import { Fournisseur } from './fournisseurs.service';
+import { ProductResponse } from './produit.service';
 
 // approvisionnement.model.ts
 export interface Approvisionnement {
@@ -18,40 +20,21 @@ export interface Approvisionnement {
 
 export interface ApproProduit {
   id: number;
-  produit: Produit;
+  produit: ProductResponse;
   quantiteCommandee: number;
   quantiteLivree: number;
   prixUnitaire: number;
   sousTotal: number;
 }
-interface Produit {
-  id: number;
-  nom: string;
-  code:string;
-  prix: number;
-  prixAchat: number;
-  quantite: number;
-  categorie: CategorieResponse;
-  image: string | null;
-  statut: string;
-}
-export interface CategorieResponse {
-  id: number;
-  nom: string;
-}
 
-export interface Fournisseur {
-  id: number;
-  nom: string;  
-  adresse: string;
-  email: string;
-  telephone: string;
-}
+
+
+
 @Injectable({
   providedIn: 'root'
 })
 export class ApprovisionnementService {
-  private endpoints= "/approvisionnements";  
+  private endpoints= "approvisionnements";  
   private approvisionnementsSubject = new BehaviorSubject<Approvisionnement[]>([]);
   approvisionnements = this.approvisionnementsSubject.asObservable();
 
@@ -89,8 +72,8 @@ export class ApprovisionnementService {
         })
       );  
   }
-  public deleteApprovisionnement(id:number) {
-    this.apiService.delete<Approvisionnement>(`${this.endpoints}/${id}`).pipe(
+  public deleteApprovisionnement(id:number):Observable<Approvisionnement> {
+    return this.apiService.delete<Approvisionnement>(`${this.endpoints}/${id}`).pipe(
       tap(() => {
         const currentApprovisionnements = this.approvisionnementsSubject.getValue();
         this.approvisionnementsSubject.next(currentApprovisionnements.filter(approvisionnement => approvisionnement.id !== id));

@@ -1,3 +1,4 @@
+import { ApprovisionnementComponent } from './composents/approvisionnement/approvisionnement.component';
 import { Routes } from '@angular/router';
 import { ProduitComponent } from './composents/produit/produit.component';
 import { DashboardComponent } from './composents/dashboard/dashboard.component';
@@ -13,22 +14,19 @@ import { CategorieComponent } from './composents/categorie/categorie.component';
 
 export const routes: Routes = [
   { path: "login", component: LoginComponent },
-  { path: "categories", component: CategorieComponent },
   
   // Produit page - only accessible to ADMIN and SERVEUR
   {
     path: "produit",
     component: ProduitComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: { forbiddenRoles: ['ROLE_CUISINIER'] }
   },
   
   // Dashboard - only accessible to ADMIN
   {
     path: "dashboard",
     component: DashboardComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: { forbiddenRoles: ['ROLE_CUISINIER', 'ROLE_SERVEUR'] }
+    // canActivate: [AuthGuard, RoleGuard],
+    // data: { forbiddenRoles: ['ROLE_CUISINIER', 'ROLE_SERVEUR'] }
   },
   
   // Commandes page - accessible to SERVEUR and ADMIN
@@ -37,13 +35,17 @@ export const routes: Routes = [
     component: CommandesComponent,
     canActivate: [AuthGuard]
   },
+  { path: "categories", component: CategorieComponent },
+  { path: "approvisionnement", component: ApprovisionnementComponent },
+
+
   
   // Stock page - only accessible to ADMIN
   {
     path: "stock",
     component: StockComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: { forbiddenRoles: ['ROLE_CUISINIER', 'ROLE_SERVEUR'] }
+    // canActivate: [AuthGuard, RoleGuard],
+    // data: { forbiddenRoles: ['ROLE_CUISINIER', 'ROLE_SERVEUR'] }
   },
   
   { path: "register", component: RegisterComponent },
@@ -52,8 +54,8 @@ export const routes: Routes = [
   {
     path: "caise",
     component: CaiseComponent,
-    canActivate: [AuthGuard, RoleGuard],
-    data: { forbiddenRoles: ['ROLE_CUISINIER', 'ROLE_SERVEUR'] }
+    // canActivate: [AuthGuard, RoleGuard],
+    // data: { forbiddenRoles: ['ROLE_CUISINIER', 'ROLE_SERVEUR'] }
   },
   { path: 'not-authorized', component: NotAuthorizedComponent },
   { path: '', redirectTo: '/login', pathMatch: 'full' },

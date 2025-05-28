@@ -7,7 +7,7 @@ import { BehaviorSubject, tap } from 'rxjs';
 import { switchMap, map, of } from 'rxjs';
 import { CategorieResponse } from './categorie.service';
 
-interface ProductResponse {
+export interface ProductResponse {
   id: number;
   nom: string;
   code:string;
