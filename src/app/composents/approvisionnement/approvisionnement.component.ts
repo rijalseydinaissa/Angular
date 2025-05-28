@@ -29,7 +29,7 @@ export class ApprovisionnementComponent {
   totalPages = 0;
 
   // Form state
-  newApproProduits: {produitId: number, quantite: number, prixUnitaire: number}[] = [];
+  newApproProduits: {produitId: number,nom: string, quantiteCommandee: number, prixUnitaire: number}[] = [];
   selectedProduit: ProductResponse | null = null;
   selectedFournisseur: any = null;
 
@@ -118,9 +118,13 @@ export class ApprovisionnementComponent {
 
   openEditForm(appro: Approvisionnement) {
     this.selectedAppro = {...appro};
-    this.newApproProduits = appro.produits.map(p => ({
+    // Vérifier si la propriété produits ou approvisionnementProduits existe
+    const produits = appro.produits || appro.approvisionnementProduits || [];
+  
+    this.newApproProduits = produits.map(p => ({
       produitId: p.produit.id,
-      quantite: p.quantiteCommandee,
+      nom: p.produit.nom,
+      quantiteCommandee: p.quantiteCommandee,
       prixUnitaire: p.prixUnitaire
     }));
     this.showForm.set(true);
@@ -130,7 +134,8 @@ export class ApprovisionnementComponent {
     if (this.selectedProduit) {
       this.newApproProduits.push({
         produitId: this.selectedProduit.id,
-        quantite: 1,
+        nom: this.selectedProduit.nom,
+        quantiteCommandee: 1,
         prixUnitaire: this.selectedProduit.prixAchat || 0
       });
       this.selectedProduit = null;
@@ -141,9 +146,10 @@ export class ApprovisionnementComponent {
     this.newApproProduits.splice(index, 1);
   }
 
+
   calculateTotal(): number {
     return this.newApproProduits.reduce((total, item) => {
-      return total + (item.quantite * item.prixUnitaire);
+      return total + (item.quantiteCommandee * item.prixUnitaire);
     }, 0);
   }
 

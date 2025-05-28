@@ -16,6 +16,7 @@ export interface Approvisionnement {
   observations?: string;
   fournisseur: Fournisseur;
   produits: ApproProduit[];
+  approvisionnementProduits?: ApproProduit[];
 }
 
 export interface ApproProduit {

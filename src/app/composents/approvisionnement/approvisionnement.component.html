@@ -42,14 +42,14 @@
   
         <!-- Add Button -->
         <button
-          class="flex items-center bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 px-4 py-2 rounded-lg gap-2 text-white font-medium transition-all duration-300 shadow-md hover:shadow-lg"
-          (click)="openCreateForm()"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-          </svg>
-          <span class="hidden md:inline">Nouvel approvisionnement</span>
-        </button>
+            class="flex items-center justify-center space-x-2 bg-white font-medium rounded-lg w-full h-10 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300/50"
+            (click)="openCreateForm()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            <span>Nouvel Approvisionnement</span>
+          </button>
       </div>
     </div>
   
@@ -61,8 +61,8 @@
             <tr>
               <th scope="col" class="px-6 py-3">Code</th>
               <th scope="col" class="px-6 py-3">Fournisseur</th>
-              <th scope="col" class="px-6 py-3">DateCommande</th>
-              <th scope="col" class="px-6 py-3">DatePrevue</th>
+              <th scope="col" class="px-6 py-3">Date</th>
+              <!-- <th scope="col" class="px-6 py-3">DatePrevue</th> -->
               <!-- <th scope="col" class="px-6 py-3">Produits</th> -->
               <th scope="col" class="px-6 py-3">Montant</th>
               <th scope="col" class="px-6 py-3">Statut</th>
@@ -88,19 +88,23 @@
                   <span class="text-xs text-gray-500">Commande: {{appro.dateCommande | date:'dd/MM/yy'}}</span>
                 </div>
               </td>
-              <td>
+              <!-- <td>
                 <span class="text-xs text-gray-500">Livraison: {{appro.dateLivraisonPrevue | date:'dd/MM/yy'}}</span>
-              </td>
+              </td> -->
+
+
+             <!-- Dans la section commentée de votre template -->
               <!-- <td class="px-6 py-4">
                 <div class="flex flex-col gap-1">
-                  <span class="text-sm font-medium">{{appro.produits.length}} produits</span>
+                  <span class="text-sm font-medium">{{(appro.produits || appro.approvisionnementProduits || []).length}} produits</span>
                   <div class="flex flex-wrap gap-1">
-                    <span *ngFor="let p of appro.produits.slice(0, 3)" 
+                    <span *ngFor="let p of (appro.produits || appro.approvisionnementProduits || []).slice(0, 3)" 
                           class="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded">
                       {{p.produit.nom}} ({{p.quantiteCommandee}})
                     </span>
-                    <span *ngIf="appro.produits.length > 3" class="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded">
-                      +{{appro.produits.length - 3}} plus
+                    <span *ngIf="(appro.produits || appro.approvisionnementProduits || []).length > 3" 
+                          class="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded">
+                      +{{(appro.produits || appro.approvisionnementProduits || []).length - 3}} plus
                     </span>
                   </div>
                 </div>
@@ -250,12 +254,12 @@
         <tbody class="bg-white divide-y divide-gray-200">
           <tr *ngFor="let item of newApproProduits; let i = index">
             <td class="px-6 py-4 whitespace-nowrap">
-              {{ (item.produitId) }}
+              {{ (item.nom) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <input 
                 type="number" 
-                [(ngModel)]="item.quantite" 
+                [(ngModel)]="item.quantiteCommandee" 
                 name="quantite_{{i}}"
                 min="1"
                 class="w-20 border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
@@ -270,7 +274,7 @@
                 class="w-24 border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
             </td>
             <td class="px-6 py-4 whitespace-nowrap font-medium">
-              {{ item.quantite * item.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }}
+              {{ item.quantiteCommandee * item.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right">
               <button 
