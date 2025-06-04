@@ -5,11 +5,14 @@ import { ApprovisionnementService, Approvisionnement, ApproProduit } from '../..
 import { PaginationService } from '../../services/pagination.service';
 import { ProduitService, ProductResponse } from '../../services/produit.service';
 import { FournisseursService } from '../../services/fournisseurs.service';
+import { ApprovisionnementFormComponent } from '../approvisionnement-form/approvisionnement-form.component';
+import { ApprovisionnementDetailsComponent } from '../approvisionnement-details/approvisionnement-details.component';
+
 
 @Component({
   selector: 'app-approvisionnement',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,ApprovisionnementFormComponent, ApprovisionnementDetailsComponent],
   templateUrl: './approvisionnement.component.html',
   styleUrls: ['./approvisionnement.component.css']
 })
@@ -23,16 +26,16 @@ export class ApprovisionnementComponent {
   produits: ProductResponse[] = [];
   fournisseurs: any[] = [];
 
+  // Ajouter ces propriétés à votre classe ApprovisionnementComponent
+  showDetailsModal = false;
+  selectedApproDetails: Approvisionnement | null = null;
+
   // Pagination
-  pageSize = 8;
+  pageSize = 7;
   currentPage = 1;
   totalPages = 0;
 
-  // Form state
-  newApproProduits: {produitId: number,nom: string, quantiteCommandee: number, prixUnitaire: number}[] = [];
-  selectedProduit: ProductResponse | null = null;
-  selectedFournisseur: any = null;
-
+  
   constructor(
     private approService: ApprovisionnementService,
     private paginationService: PaginationService,
@@ -46,14 +49,27 @@ export class ApprovisionnementComponent {
     this.loadFournisseurs();
   }
 
-  loadApprovisionnements() {
-    this.approService.getApprovisionnements().subscribe(data => {
-      this.approvisionnements = data;
-      console.log(data);
+  // loadApprovisionnements() {
+  //   this.approService.getApprovisionnements().subscribe(data => {
+  //     this.approvisionnements = data;
+  //     console.log(data);
       
-      this.filteredApprovisionnements = [...data];
-      this.updateTotalPages();
-    });
+  //     this.filteredApprovisionnements = [...data];
+  //     this.updateTotalPages();
+  //   });
+  // }
+  loadApprovisionnements(){
+    this.approService.getApprovisionnements().subscribe({
+      next: (data) => {
+        this.approvisionnements = data.filter(appro => appro != null);
+        // console.log(data);
+        this.filteredApprovisionnements = [...data];
+        this.updateTotalPages();
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des approvisionnements:', error);
+      }
+    })
   }
 
   loadProduits() {
@@ -112,68 +128,94 @@ export class ApprovisionnementComponent {
   // Form methods
   openCreateForm() {
     this.selectedAppro = null;
-    this.newApproProduits = [];
     this.showForm.set(true);
   }
 
-  openEditForm(appro: Approvisionnement) {
-    this.selectedAppro = {...appro};
-    // Vérifier si la propriété produits ou approvisionnementProduits existe
-    const produits = appro.produits || appro.approvisionnementProduits || [];
+
+openEditForm(appro: Approvisionnement) {
+  // console.log('Ouverture du formulaire d\'édition pour:', appro);
+  // console.log('Fournisseur de l\'appro:', appro.fournisseur);
+  console.log('Produits de l\'appro:', appro.produits || appro.approvisionnementProduits);
   
-    this.newApproProduits = produits.map(p => ({
-      produitId: p.produit.id,
-      nom: p.produit.nom,
-      quantiteCommandee: p.quantiteCommandee,
-      prixUnitaire: p.prixUnitaire
-    }));
-    this.showForm.set(true);
+  this.selectedAppro = {...appro}; // Copie profonde si nécessaire
+  this.showForm.set(true);
+}
+
+handleSubmit(approData: any) {
+  console.log('Données reçues du formulaire:', approData);
+  
+  // Validation des données avant envoi
+  if (!approData.fournisseurId) {
+    alert('Fournisseur manquant');
+    return;
   }
 
-  addProduitToForm() {
-    if (this.selectedProduit) {
-      this.newApproProduits.push({
-        produitId: this.selectedProduit.id,
-        nom: this.selectedProduit.nom,
-        quantiteCommandee: 1,
-        prixUnitaire: this.selectedProduit.prixAchat || 0
-      });
-      this.selectedProduit = null;
-    }
+  if (!approData.produits || approData.produits.length === 0) {
+    alert('Aucun produit sélectionné');
+    return;
   }
 
-  removeProduitFromForm(index: number) {
-    this.newApproProduits.splice(index, 1);
+  // Validation des produits
+  const produitsValides = approData.produits.every((p: any) => 
+    p.produitId && p.quantiteCommandee > 0 && p.prixUnitaire >= 0
+  );
+
+  if (!produitsValides) {
+    alert('Données des produits invalides');
+    return;
   }
 
-
-  calculateTotal(): number {
-    return this.newApproProduits.reduce((total, item) => {
-      return total + (item.quantiteCommandee * item.prixUnitaire);
-    }, 0);
-  }
-
-  submitForm() {
-    const approData = {
-      fournisseurId: this.selectedFournisseur?.id,
-      produits: this.newApproProduits,
-      montantTotal: this.calculateTotal()
+  if (this.selectedAppro) {
+    console.log('Mode édition - ID:', this.selectedAppro.id);
+    
+    // Préparation des données pour la mise à jour
+    const updateData = {
+      id: this.selectedAppro.id,
+      fournisseurId: approData.fournisseurId,
+      dateLivraisonPrevue: this.selectedAppro.dateLivraisonPrevue,
+      dateLivraisonEffective: this.selectedAppro.dateLivraisonEffective,
+      statut: this.selectedAppro.statut, // Conserver le statut existant
+      observations: approData.observations || '',
+      produits: approData.produits.map((p: any) => ({
+        produitId: p.produitId,
+        quantiteCommandee: p.quantiteCommandee,
+        quantiteLivree: 0, // Valeur par défaut pour les nouveaux produits
+        prixUnitaire: p.prixUnitaire
+      }))
     };
-
-    if (this.selectedAppro) {
-      // Update existing
-      this.approService.updateApprovisionnement(this.selectedAppro.id, approData as any).subscribe(() => {
+    
+    console.log('Données envoyées pour mise à jour:', updateData);
+    
+    this.approService.updateApprovisionnement(this.selectedAppro.id, updateData).subscribe({
+      next: (result) => {
+        console.log('Mise à jour réussie:', result);
         this.loadApprovisionnements();
         this.showForm.set(false);
-      });
-    } else {
-      // Create new
-      this.approService.createApprovisionnement(approData as any).subscribe(() => {
+        this.selectedAppro = null;
+      },
+      error: (error) => {
+        console.error('Erreur lors de la mise à jour:', error);
+        const errorMsg = error.error?.message || error.message || 'Erreur inconnue';
+        alert('Erreur lors de la mise à jour: ' + errorMsg);
+      }
+    });
+  } else {
+    console.log('Mode création');
+    this.approService.createApprovisionnement(approData).subscribe({
+      next: (result) => {
+        console.log('Création réussie:', result);
         this.loadApprovisionnements();
         this.showForm.set(false);
-      });
-    }
+      },
+      error: (error) => {
+        console.error('Erreur lors de la création:', error);
+        const errorMsg = error.error?.message || error.message || 'Erreur inconnue';
+        alert('Erreur lors de la création: ' + errorMsg);
+      }
+    });
   }
+}
+
 
   deleteApprovisionnement(id: number) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet approvisionnement ?')) {
@@ -190,7 +232,7 @@ export class ApprovisionnementComponent {
       this.loadApprovisionnements();
     });
   }
-
+// validation
   getStatutLabel(statut: string): string {
     const statutLabels: { [key: string]: string } = {
       'EN_ATTENTE': 'En attente',
@@ -207,4 +249,23 @@ export class ApprovisionnementComponent {
     this.showForm.set(false);
     this.selectedAppro = null;
   }
+  //details   ppro
+
+  /**
+ * Ouvre le modal des détails pour un approvisionnement
+ */
+openDetailsModal(appro: Approvisionnement) {
+  this.selectedApproDetails = {...appro};
+  this.showDetailsModal = true;
+}
+
+/**
+ * Ferme le modal des détails
+ */
+closeDetailsModal() {
+  this.showDetailsModal = false;
+  this.selectedApproDetails = null;
+}
+
+
 }

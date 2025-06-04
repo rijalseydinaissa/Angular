@@ -6,45 +6,75 @@ import { catchError, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-
   private baseUrl = 'http://localhost:8081';
 
-  constructor(private http:HttpClient) {  }
+  constructor(private http: HttpClient) { }
 
-
-  public getHeaders(){
+  // Headers pour les requêtes GET (sans Content-Type)
+  public getHeaders() {
     const headers = new HttpHeaders({
-      Authorization: `Bearer ${localStorage.getItem('token')}`, // Add token to the headers
+      'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
     });
     return headers;
   }
-  
-  get<T>(endpoint: string ,params?: any): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`,{params, headers:this.getHeaders()});
+
+  // Headers pour les requêtes avec body (POST, PUT, PATCH)
+
+
+  get<T>(endpoint: string, params?: any): Observable<T> {
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { 
+      params, 
+      headers: this.getHeaders() 
+    });
   }
+
   post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data, {headers:this.getHeaders()}).pipe(
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data, { 
+      headers: this.getHeaders() 
+    }).pipe(
       catchError(this.handleError)
     );
   }
+
   put<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, data, {headers:this.getHeaders()}).pipe(
+    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, data, { 
+      headers: this.getHeaders() 
+    }).pipe(
       catchError(this.handleError)
     );
   }
+
   delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, {headers:this.getHeaders()}).pipe(
-      catchError(this.handleError));
-  }
-  patch<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, data, {headers:this.getHeaders()}).pipe(
+    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, { 
+      headers: this.getHeaders() 
+    }).pipe(
       catchError(this.handleError)
     );
   }
+
+  patch<T>(endpoint: string, data: any): Observable<T> {
+    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, data, { 
+      headers: this.getHeaders() 
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
   uploadFile<T>(endpoint: string, file: File): Observable<T> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, formData, {headers:this.getHeaders()}).pipe(
+    
+    // Pour les uploads de fichiers, on ne définit pas Content-Type 
+    // (le navigateur le fait automatiquement avec boundary)
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    });
+    
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, formData, { 
+      headers 
+    }).pipe(
       catchError(this.handleError)
     );
   }
@@ -67,7 +97,10 @@ export class ApiService {
     }
     
     console.error(errorMessage);
-    return throwError(() => ({ message: errorMessage, status: error.status, error: error.error }));
+    return throwError(() => ({ 
+      message: errorMessage, 
+      status: error.status, 
+      error: error.error 
+    }));
   }
-
 }
