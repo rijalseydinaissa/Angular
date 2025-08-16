@@ -1,0 +1,223 @@
+<div class="flex flex-col gap-6 p-6 h-full bg-gray-50">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row w-full justify-between items-start md:items-center gap-4 bg-white p-4 rounded-xl shadow-sm">
+      <div class="flex items-center gap-3">
+        <p class="text-primary text-3xl font-bold">Approvisionnements</p>
+        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
+          {{approvisionnements.length}} commandes
+        </span>
+      </div>
+  
+      <div class="flex flex-col md:flex-row w-full md:w-auto items-start md:items-center gap-4">
+        <!-- Search Field -->
+        <div class="relative w-full md:w-64">
+          <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+            </svg>
+          </div>
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="filterApprovisionnements()"
+            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5"
+            placeholder="Rechercher..."
+          />
+        </div>
+  
+        <!-- Filter Dropdown -->
+        <select
+          [(ngModel)]="selectedFilter"
+          (change)="filterApprovisionnements()"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+        >
+          <option value="all">Tous les statuts</option>
+          <option value="EN_ATTENTE">En attente</option>
+          <option value="CONFIRME">Confirmé</option>
+          <option value="EXPEDIE">Expédié</option>
+          <option value="LIVRE_COMPLETEMENT">Livré complètement</option>
+          <option value="LIVRE_PARTIELLEMENT">Livré partiellement</option>
+          <option value="ANNULE">Annulé</option>
+        </select>
+  
+        <!-- Add Button -->
+        <button
+            class="flex items-center justify-center space-x-2 bg-white font-medium rounded-lg w-full h-10 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-blue-300/50"
+            (click)="openCreateForm()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            <span>Nouvel Approvisionnement</span>
+          </button>
+      </div>
+    </div>
+  
+    <!-- Approvisionnements Table -->
+    <div class="flex flex-col bg-white w-full rounded-xl shadow-sm overflow-hidden h-[90%]">
+      <div class="overflow-x-auto h-full">
+        <table class="w-full text-sm text-left text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0">
+            <tr>
+              <th scope="col" class="px-6 py-3">Code</th>
+              <th scope="col" class="px-6 py-3">Fournisseur</th>
+              <th scope="col" class="px-6 py-3">Date</th>
+              <!-- <th scope="col" class="px-6 py-3">DatePrevue</th> -->
+              <!-- <th scope="col" class="px-6 py-3">Produits</th> -->
+              <th scope="col" class="px-6 py-3">Montant</th>
+              <th scope="col" class="px-6 py-3">Statut</th>
+              <th scope="col" class="px-6 py-3 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let appro of paginatedApprovisionnements" 
+                class="bg-white border-b hover:bg-gray-50 transition-colors duration-150">
+              <td class="px-6 py-4 font-medium text-gray-900">
+                <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">{{appro.code}}</span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
+                    <span class="text-xs font-medium text-gray-600">{{appro.fournisseur.nom.charAt(0)}}</span>
+                  </div>
+                  <span>{{appro.fournisseur.nom}}</span>
+                </div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex flex-col">
+                  <span class="text-xs text-gray-500">Commande: {{appro.dateCommande | date:'dd/MM/yy'}}</span>
+                </div>
+              </td>
+              <!-- <td>
+                <span class="text-xs text-gray-500">Livraison: {{appro.dateLivraisonPrevue | date:'dd/MM/yy'}}</span>
+              </td> -->
+
+
+             <!-- Dans la section commentée de votre template -->
+              <!-- <td class="px-6 py-4">
+                <div class="flex flex-col gap-1">
+                  <span class="text-sm font-medium">{{(appro.produits || appro.approvisionnementProduits || []).length}} produits</span>
+                  <div class="flex flex-wrap gap-1">
+                    <span *ngFor="let p of (appro.produits || appro.approvisionnementProduits || []).slice(0, 3)" 
+                          class="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded">
+                      {{p.produit.nom}} ({{p.quantiteCommandee}})
+                    </span>
+                    <span *ngIf="(appro.produits || appro.approvisionnementProduits || []).length > 3" 
+                          class="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded">
+                      +{{(appro.produits || appro.approvisionnementProduits || []).length - 3}} plus
+                    </span>
+                  </div>
+                </div>
+              </td> -->
+              <td class="px-6 py-4 font-medium">
+                {{ appro.montantTotal }} <!-- ou 'EUR' selon votre devise -->
+              </td>
+              
+              <td class="px-6 py-4">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                      [ngClass]="{
+                        'bg-yellow-100 text-yellow-800': appro.statut === 'EN_ATTENTE',
+                        'bg-blue-100 text-blue-800': appro.statut === 'CONFIRME',
+                        'bg-purple-100 text-purple-800': appro.statut === 'EXPEDIE',
+                        'bg-green-100 text-green-800': appro.statut === 'LIVRE_COMPLETEMENT',
+                        'bg-orange-100 text-orange-800': appro.statut === 'LIVRE_PARTIELLEMENT',
+                        'bg-red-100 text-red-800': appro.statut === 'ANNULE'
+                      }">
+                  {{ getStatutLabel(appro.statut) }}
+                </span>
+              </td>
+        <td class="px-6 py-4 text-right">
+          <div class="flex justify-end gap-2"
+            class="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+            title="modifier">
+            <button (click)="openEditForm(appro)" [disabled]="appro.statut == 'ANNULE' || appro.statut == 'LIVRE_COMPLETEMENT'"  class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+              </svg>
+            </button>
+            <button (click)="deleteApprovisionnement(appro.id)" [disabled]="appro.statut !== 'EN_ATTENTE'"  class="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+              class="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+              title="supprimer">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            <button (click)="openDetailsModal(appro)" 
+                    class="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+                    title="détails">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        </td>
+      </tr>
+      <tr *ngIf="filteredApprovisionnements.length === 0">
+        <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+          Aucun approvisionnement trouvé
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Pagination -->
+<div class="flex items-center justify-between px-6 py-4 bg-white border-t">
+  <div class="text-sm text-gray-700">
+    <!-- {{ (currentPage - 1) * pageSize + 1 }} 
+    {{ Math.min(currentPage * pageSize, filteredApprovisionnements.length) }} sur 
+    {{ filteredApprovisionnements.length }} résultats -->
+  </div>
+  <div class="flex gap-1">
+    <button 
+      (click)="changePage(currentPage - 1)"
+      [disabled]="currentPage === 1"
+      class="px-3 py-1 border rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+      <<
+    </button>
+    
+    <ng-container *ngFor="let page of getVisiblePages()">
+      <button 
+        (click)="changePage(page)"
+        [class.bg-blue-50]="currentPage === page"
+        class="px-3 py-1 border rounded-md hover:bg-gray-50">
+        {{ page }}
+      </button>
+    </ng-container>
+    
+    <button 
+      (click)="changePage(currentPage + 1)"
+      [disabled]="currentPage === totalPages"
+      class="px-3 py-1 border rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+      >>
+    </button>
+  </div>
+</div>
+</div>
+</div>
+<!-- Modal des détails d'approvisionnement -->
+<!-- Remplacez toute la partie modale des détails par : -->
+<app-approvisionnement-details 
+  [approvisionnement]="selectedApproDetails" 
+  [showModal]="showDetailsModal"
+  (modalClosed)="showDetailsModal = false"
+  >
+  <button close-button 
+          (click)="closeDetailsModal()" 
+          class="text-white hover:text-gray-200 p-2 hover:bg-white/10 rounded-lg transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+</app-approvisionnement-details>
+<!-- Approvisionnement Form Modal -->
+<div *ngIf="showForm()" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <app-approvisionnement-form
+  [produits]="produits"
+  [fournisseurs]="fournisseurs"
+  [selectedAppro]="selectedAppro"
+  (submitFormEvent)="handleSubmit($event)"
+  (closeFormEvent)="closeForm()"
+></app-approvisionnement-form>
+</div>

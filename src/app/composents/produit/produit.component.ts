@@ -1,18 +1,21 @@
 import { PaginationService } from './../../services/pagination.service';
 import { ProduitService } from './../../services/produit.service';
+import { AlertService } from '../../services/alert.service';
 import { Component, ElementRef, Signal, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from '../product-form/product-form.component';
 import { CommonModule } from '@angular/common';
 import { OnInit } from '@angular/core';
+import { CategorieResponse ,CategorieService } from '../../services/categorie.service';
 
 interface Product {
  id: number;
  image: string | null;
  nom: string;
+ code: string;
  quantite: number;
  prix: number;
- categorie: string;
+ categorie: CategorieResponse;
  statut: string;
 }
 
@@ -31,34 +34,34 @@ export class ProduitComponent implements OnInit {
   action: boolean = false;
   filteredProducts: Product[] = [];
   products: Product[] = [];
-  categories: string[] = [];
-
+  categories: CategorieResponse[] = [];
+  dropdownOpen: boolean = false;
+  
 
   pageSize = 8;
   currentPage = 1;
   totalPages = 0;
-  // @ViewChild('dropdownMenu') dropdownMenu: ElementRef | undefined;
+ 
 
-// closeDropdown(event: Event) {
-//   event.stopPropagation();
-//   // Retirer le focus du menu déroulant
-//   if (this.dropdownMenu?.nativeElement) {
-//     this.dropdownMenu.nativeElement.blur();
-//   }
-//   // Appeler editProduct
-//   this.editProduct(this.products.find(p => p.id === this.selectedProduct?.id)!);
-// }
-
-  constructor(private produitService: ProduitService, private paginationService: PaginationService) {}
+  constructor(private produitService: ProduitService, private paginationService: PaginationService, private categorieService: CategorieService,private alertService: AlertService) {}
 
   ngOnInit(): void {
     this.produitService.getProducts().subscribe(data => {
       this.products = data;
       this.filteredProducts = this.products;
-      this.categories = Array.from(new Set(data.map((product: { categorie: any }) => product.categorie)));
+      // this.categories = Array.from(new Set(data.map((product: { categorie: any }) => product.categorie.nom)));
       this.updateTotalPages();
     });
+    this.categorieService.getCategories().subscribe(categories=>{
+      this.categories=categories.filter(categories=>categories.nom!='null');
+      console.log(categories);
+    });
   }
+
+  closeDropdown() {
+    this.dropdownOpen = true;
+  }
+  
 //pagination
   updateTotalPages() {
     this.totalPages = this.paginationService.getTotalPages(this.filteredProducts, this.pageSize);
@@ -77,13 +80,29 @@ export class ProduitComponent implements OnInit {
   getVisiblePages(): number[] {
     return this.paginationService.getVisiblePages(this.currentPage, this.totalPages);
   }
+
+  changePageSize() {
+    // Convertir pageSize en nombre car les valeurs de select sont souvent des chaînes
+    this.pageSize = Number(this.pageSize);
+    // Recalculer le nombre total de pages avec la nouvelle taille
+    this.updateTotalPages();
+    
+    // Ajuster la page courante si nécessaire
+    if (this.currentPage > this.totalPages) {
+      this.currentPage = this.totalPages || 1;
+    }
+  }
   //fin pagination
 
   editProduct(product : Product){
-    this.selectedProduct = product,
+     // Vérifiez la structure de la catégorie
+    console.log('Product to edit:', product);
+    console.log('Product category:', product.categorie);
+    
+    this.selectedProduct = {...product},
     this.showProductForm.set(true);
    }
-  filterProducts() {
+   filterProducts() {
     if (!this.products) {
       this.filteredProducts = [];
       return;
@@ -93,11 +112,13 @@ export class ProduitComponent implements OnInit {
     this.filteredProducts = this.products.filter((product) => {
       if (!product) return false;
 
+      // Recherche par nom de produit
       const matchesSearch = product.nom ? 
         product.nom.toLowerCase().includes(searchLower) : false;
 
+      // Filtre par catégorie
       const matchesCategory = this.selectedFilter === 'all' || 
-        product.categorie === this.selectedFilter;
+        product.categorie.id.toString() === this.selectedFilter;
 
       return matchesSearch && matchesCategory;
     });
@@ -106,22 +127,47 @@ export class ProduitComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  deleteProduct(productId: number) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      this.produitService.deleteProduct(productId).subscribe(
-        () => {
+ deleteProduct(productId: number) {
+  this.alertService.showConfirmation(
+    'Cette action supprimera définitivement le produit. Voulez-vous continuer ?',
+    'Oui, supprimer'
+  ).then((result) => {
+    if (result.isConfirmed) {
+      this.alertService.showLoading('Suppression en cours...');
+      
+      this.produitService.deleteProduct(productId).subscribe({
+        next: () => {
+          this.alertService.closeAlert();
+          this.alertService.showSuccess('Produit supprimé avec succès');
+          
+          // Mettre à jour la liste des produits
           this.products = this.products.filter(p => p.id !== productId);
           this.filterProducts();
         },
-        error => {
+        error: (error) => {
+          this.alertService.closeAlert();
           console.error('Erreur lors de la suppression du produit:', error);
+          
+          const errorResponse = this.alertService.handleHttpError(error);
+          
+          if (errorResponse) {
+            this.alertService.showError(errorResponse.message, errorResponse.errorCode);
+          } else {
+            this.alertService.showError('Impossible de supprimer le produit');
+          }
         }
-      );
+      });
     }
-  }
+  });
+}
+
 
   handleProductCreated(newProduct: Product) {
-    this.filterProducts();
+    // Rafraîchir la liste des produits après une création
+    this.produitService.getProducts().subscribe(data => {
+      this.products = data;
+      this.filterProducts();
+    });
   }
 
   handleProductUpdated(updatedProduct: Product) {

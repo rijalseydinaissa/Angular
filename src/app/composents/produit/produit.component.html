@@ -19,8 +19,8 @@
       class="block px-4 py-2 text-base border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer"
     >
       <option value="all">Tous les produits</option>
-      <option *ngFor="let category of categories" [value]="category">
-        {{ category }}
+      <option *ngFor="let category of categories" [value]="category.id">
+        {{ category.nom }}
       </option>
     </select>
 
@@ -40,6 +40,7 @@
       <thead>
         <tr>
           <th>Produits</th>
+          <th>Code</th>
           <th>Quantité</th>
           <th>Prix</th>
           <th>Categorie</th>
@@ -54,9 +55,10 @@
             <img *ngIf="!product?.image" src="chemin/vers/image/par/defaut.png" class="w-12 h-12 rounded" [alt]="product.nom">
             <p>{{ product.nom }}</p>
           </td>
+          <td>{{ product.code }}</td>
           <td>{{ product.quantite }}</td>
           <td>{{ product.prix }}</td>
-          <td>{{ product.categorie }}</td>
+          <td>{{ product.categorie.nom }}</td>
           <td>
             <p class="p-2 rounded font-bold text-lg text-white"
                [ngClass]="{
@@ -75,16 +77,16 @@
                      class="flex items-center px-4 py-2 text-red-500 hover:bg-red-50 rounded-md transition-colors duration-200">
                     <i class="fas fa-trash-alt w-5"></i>
                     <span class="text-base text-red">Supprimer</span>
-                  </a>
+                  </a> 
                 </li>
                 <hr>
-                <li>
+                <li #dropdownOpen>
                   <!-- <a (click)="editProduct(product); closeDropdown($event)"  -->
-                  <a (click)="editProduct(product); " 
-                     class="flex items-center px-4 py-2 text-blue-500 hover:bg-blue-50 rounded-md transition-colors duration-200">
-                    <i class="fas fa-edit w-5"></i>
-                    <span class="text-base text-black">Modifier</span>
-                  </a>
+                  <a (click)="editProduct(product); closeDropdown()" 
+                    class="flex items-center px-4 py-2 text-blue-500 hover:bg-blue-50 rounded-md transition-colors duration-200">
+                   <i class="fas fa-edit w-5"></i>
+                   <span class="text-base text-black">Modifier</span>
+                 </a>
                 </li>
                 <div class="h-px bg-gray-200 my-2"></div>
               </ul>
@@ -94,45 +96,64 @@
       </tbody>
     </table>
 
-    <!-- Contrôles de pagination -->
-    <div class="flex justify-end items-center gap-2 p-4 bg-primary text-white">
-      <!-- Première page -->
-      <button 
-        *ngIf="currentPage > 3"
-        class="px-4 py-2 text-lg font-bold rounded  border hover:bg-gray-100"
-        (click)="changePage(1)"
-      >
-        1
-      </button>
-
-      <!-- Points de suspension au début -->
-      <span *ngIf="currentPage > 3">...</span>
-
-      <!-- Pages autour de la page courante -->
-      <button 
-        *ngFor="let page of getVisiblePages()"
-        class="px-4 py-2 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
-        [ngClass]="{
-          'bg-green text-white border-green': currentPage === page,
-          'text-white border-[#ffffff33] hover:bg-[#ffffff1a]': currentPage !== page
-        }"
-        (click)="changePage(page)"
-      >
-        {{ page }}
-      </button>
-
-      <!-- Points de suspension à la fin -->
-      <span *ngIf="currentPage < totalPages - 2">...</span>
-
-      <!-- Dernière page -->
-      <button 
-        *ngIf="currentPage < totalPages - 2"
-        class="px-4 py-2 text-lg font-bold rounded border hover:bg-gray-100"
-        (click)="changePage(totalPages)"
-      >
-        {{ totalPages }}
-      </button>
+     <!-- Pagination -->
+     <div *ngIf="products.length > 0" class="flex justify-end items-center  mt-4 mr-4">
+        <!-- Sélecteur du nombre d'éléments par page -->
+        <!-- <div class="flex items-center gap-2 text-white">
+          <span>Afficher</span>
+          <select 
+            [(ngModel)]="pageSize" 
+            (change)="changePageSize()"
+            class="px-2 py-1 bg-white text-primary rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="15">15</option>
+            <option [value]="20">20</option>
+          </select>
+          <span>par page</span>
+        </div> -->
+      <nav>
+        <ul class="flex space-x-1">
+          <!-- Bouton précédent -->
+          <li>
+            <button 
+              (click)="changePage(currentPage - 1)" 
+              [disabled]="currentPage === 1"
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === 1 ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              &laquo;
+            </button>
+          </li>
+          
+          <!-- Pages numérotées -->
+          <li *ngFor="let page of getVisiblePages()">
+            <button 
+              (click)="changePage(page)" 
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === page ? 'bg-green text-white' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              {{page}}
+            </button>
+          </li>
+          
+          <!-- Bouton suivant -->
+          <li>
+            <button 
+              (click)="changePage(currentPage + 1)" 
+              [disabled]="currentPage === totalPages"
+              class="px-3 py-1 text-lg font-bold rounded border hover:bg-gray-100 transition-colors duration-200"
+              [ngClass]="currentPage === totalPages ? 'bg-gray-700 text-gray-400 cursor-not-allowed' : 'bg-blue-600 text-white hover:bg-blue-700'">
+              &raquo;
+            </button>
+          </li>
+        </ul>
+      </nav>
     </div>
+    
+    <!-- Indicateur de page -->
+    <!-- <div *ngIf="categories.length > 0" class="flex justify-end mt-2  mr-9 items-center  text-white text-sm">
+      Page {{currentPage}} sur {{totalPages}}
+    </div> -->
   </div>
 
   <app-product-form
