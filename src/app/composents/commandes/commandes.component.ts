@@ -1,3 +1,4 @@
+import { AlertService } from './../../services/alert.service';
 import { CommonModule } from '@angular/common';
 import { Component, signal,OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,7 +35,7 @@ export class CommandesComponent implements OnInit {
     console.log(commande);
   }
 
-  constructor(private commandeService:CommandeService){}
+  constructor(private commandeService:CommandeService,private   alertService:AlertService){}
   
   ngOnInit(): void {
     this.loadCommandes();
@@ -93,21 +94,38 @@ export class CommandesComponent implements OnInit {
     });
   }
   //delete commande 
-  deleteCommande(id: number) {
-    this.commandeService.deleteCommande(id).subscribe({
-      next: () => {
-        // Pas besoin de recharger toutes les commandes
-        const updatedCommandes = this.commandes.filter(commande => commande.id !== id);
-        this.commandes = updatedCommandes;
-        this.filteredCommandes = this.commandes; // Mettre à jour aussi les commandes filtrées
-        this.filterCommandes(); // Réappliquer les filtres
-        this.showDetail.set(true); // Fermer la modal
-      },
-      error: (error) => {
-        console.error('Erreur lors de la suppression de la commande :', error);
-      }
-    });
-  }
+ deleteCommande(commandeId: number) {
+  this.alertService.showConfirmation(
+    'Cette action supprimera définitivement la commande. Voulez-vous continuer ?',
+    'Oui, supprimer'
+  ).then((result) => {
+    if (result.isConfirmed) {
+      this.alertService.showLoading('Suppression en cours...');
+      
+      this.commandeService.deleteCommande(commandeId).subscribe({
+        next: () => {
+          this.alertService.closeAlert();
+          this.alertService.showSuccess('Commande supprimée avec succès');
+          
+          // Recharger la liste des commandes
+          this.loadCommandes();
+        },
+        error: (error) => {
+          this.alertService.closeAlert();
+          console.error('Erreur lors de la suppression de la commande:', error);
+          
+          const errorResponse = this.alertService.handleHttpError(error);
+          
+          if (errorResponse) {
+            this.alertService.showError(errorResponse.message, errorResponse.errorCode);
+          } else {
+            this.alertService.showError('Impossible de supprimer la commande');
+          }
+        }
+      });
+    }
+  });
+}
   private formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toISOString().split('T')[0]; // Format YYYY-MM-DD

@@ -92,28 +92,31 @@ updateProduct(id: number, productData: any, imageFile: File | null): Observable<
     })
   );
 }
- // produit.service.ts
- public createProductWithImage(productData: any, imageFile: File | null): Observable<ProductResponse> {
-  return this.apiService.post<ProductResponse>(this.endpoint, productData).pipe(
-    switchMap(response => {
-      if (imageFile && response.id) {
-        return this.uploadProductImage(response.id, imageFile).pipe(
-          map(imageResponse => ({ ...response, image: imageResponse.url }))
-        );
-      }
-      return of(response);
-    }),
-    tap(finalProduct => {
-      const currentProducts = this.productsSubject.getValue();
-      this.productsSubject.next([finalProduct, ...currentProducts]);
-    })
-  );
-}
+ // Création d'un produit avec image
+  public createProductWithImage(productData: any, imageFile: File | null): Observable<ProductResponse> {
+    return this.apiService.post<ProductResponse>(this.endpoint, productData).pipe(
+      switchMap(response => {
+        if (imageFile && response.id) {
+          return this.uploadProductImage(response.id, imageFile).pipe(
+            map(imageResponse => ({ ...response, image: imageResponse.url }))
+          );
+        }
+        return of(response);
+      }),
+      tap(finalProduct => {
+        const currentProducts = this.productsSubject.getValue();
+        this.productsSubject.next([finalProduct, ...currentProducts]);
+      })
+    );
+  }
 
+  // Upload d'image pour un produit - CORRIGÉ
   public uploadProductImage(productId: number, imageFile: File): Observable<{url: string}> {
     const formData = new FormData();
     formData.append('image', imageFile);
-    return this.apiService.post<{url: string}>(`${this.endpoint}/${productId}/image`, formData);
-}
+    
+    // Utiliser la méthode uploadFile dédiée pour les FormData
+    return this.apiService.uploadFile<{url: string}>(`${this.endpoint}/${productId}/image`, formData);
+  }
 }
 

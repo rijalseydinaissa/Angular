@@ -6,74 +6,77 @@ import { catchError, Observable, throwError } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:8081';
+
+  //  private baseUrl = 'http://localhost:8081';
+  private baseUrl = 'http://51.44.243.177:8081';
 
   constructor(private http: HttpClient) { }
 
-  // Headers pour les requêtes GET (sans Content-Type)
+  // Headers pour les requêtes JSON normales
   public getHeaders() {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-        'Accept': 'application/json',
+      'Accept': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     });
     return headers;
   }
 
-  // Headers pour les requêtes avec body (POST, PUT, PATCH)
-
+  // Headers pour les uploads de fichiers (sans Content-Type)
+  public getMultipartHeaders() {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    });
+    return headers;
+  }
 
   get<T>(endpoint: string, params?: any): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { 
-      params, 
-      headers: this.getHeaders() 
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, {
+      params,
+      headers: this.getHeaders()
     });
   }
 
   post<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data, { 
-      headers: this.getHeaders() 
+    // Vérifier si les données sont FormData
+    const isFormData = data instanceof FormData;
+    const headers = isFormData ? this.getMultipartHeaders() : this.getHeaders();
+    
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, data, {
+      headers
     }).pipe(
       catchError(this.handleError)
     );
   }
 
   put<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, data, { 
-      headers: this.getHeaders() 
+    return this.http.put<T>(`${this.baseUrl}/${endpoint}`, data, {
+      headers: this.getHeaders()
     }).pipe(
       catchError(this.handleError)
     );
   }
 
   delete<T>(endpoint: string): Observable<T> {
-    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, { 
-      headers: this.getHeaders() 
+    return this.http.delete<T>(`${this.baseUrl}/${endpoint}`, {
+      headers: this.getHeaders()
     }).pipe(
       catchError(this.handleError)
     );
   }
 
   patch<T>(endpoint: string, data: any): Observable<T> {
-    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, data, { 
-      headers: this.getHeaders() 
+    return this.http.patch<T>(`${this.baseUrl}/${endpoint}`, data, {
+      headers: this.getHeaders()
     }).pipe(
       catchError(this.handleError)
     );
   }
 
-  uploadFile<T>(endpoint: string, file: File): Observable<T> {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    // Pour les uploads de fichiers, on ne définit pas Content-Type 
-    // (le navigateur le fait automatiquement avec boundary)
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-    });
-    
-    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, formData, { 
-      headers 
+  // Méthode dédiée pour les uploads de fichiers
+  uploadFile<T>(endpoint: string, formData: FormData): Observable<T> {
+    return this.http.post<T>(`${this.baseUrl}/${endpoint}`, formData, {
+      headers: this.getMultipartHeaders()
     }).pipe(
       catchError(this.handleError)
     );
@@ -81,7 +84,6 @@ export class ApiService {
 
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Une erreur est survenue';
-    
     if (error.error instanceof ErrorEvent) {
       // Erreur côté client
       errorMessage = `Erreur: ${error.error.message}`;
@@ -95,12 +97,11 @@ export class ApiService {
         errorMessage = `Code: ${error.status}, Message: ${error.message}`;
       }
     }
-    
     console.error(errorMessage);
-    return throwError(() => ({ 
-      message: errorMessage, 
-      status: error.status, 
-      error: error.error 
+    return throwError(() => ({
+      message: errorMessage,
+      status: error.status,
+      error: error.error
     }));
   }
 }

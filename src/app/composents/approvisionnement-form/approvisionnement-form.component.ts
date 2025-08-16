@@ -5,6 +5,7 @@ import { Approvisionnement, ApprovisionnementService } from '../../services/appr
 import { Fournisseur } from '../../services/fournisseurs.service';
 import { ProductResponse } from '../../services/produit.service';
 import { Observable , map, switchMap, of, BehaviorSubject, combineLatest, tap} from 'rxjs';
+import { StatutValidationService } from '../../services/statut-validation.service';
 
 @Component({
   selector: 'app-approvisionnement-form',
@@ -25,7 +26,7 @@ export class ApprovisionnementFormComponent {
   selectedFournisseur: Fournisseur | null = null;
   filteredProduits: ProductResponse[] = [];
 
-  constructor(private approvisionnementService: ApprovisionnementService) {}
+  constructor(private approvisionnementService: ApprovisionnementService,private statutValidation: StatutValidationService) {}
 
  addProduitToForm(){
     if (this.selectedProduit) {
@@ -96,6 +97,7 @@ onSubmit() {
 ngOnChanges() {
   if (this.selectedAppro) {
     console.log('Chargement des données d\'édition:', this.selectedAppro);
+    
     
     // Charger les produits existants
     const produitsSource = this.selectedAppro.produits || this.selectedAppro.approvisionnementProduits || [];

@@ -60,14 +60,16 @@ export class ApprovisionnementDetailsComponent {
       color: 'bg-purple-100 text-purple-800 border-purple-300',
       actions: [
         { type: 'LIVRER_PARTIELLEMENT', label: 'Livraison partielle', nextStatut: 'LIVRE_PARTIELLEMENT', color: 'bg-orange-500 hover:bg-orange-600', needsQuantityInput: true },
-        { type: 'LIVRER_COMPLETEMENT', label: 'Livraison complète', nextStatut: 'LIVRE_COMPLETEMENT', color: 'bg-green-500 hover:bg-green-600', needsQuantityInput: true }
+        { type: 'LIVRER_COMPLETEMENT', label: 'Livraison complète', nextStatut: 'LIVRE_COMPLETEMENT', color: 'bg-green-500 hover:bg-green-600', needsQuantityInput: true },
+        { type: 'ANNULER', label: 'Annuler', nextStatut: 'ANNULE', color: 'bg-red-500 hover:bg-red-600' }
       ]
     },
     'LIVRE_PARTIELLEMENT': {
       label: 'Livré partiellement',
       color: 'bg-orange-100 text-orange-800 border-orange-300',
       actions: [
-        { type: 'LIVRER_COMPLETEMENT', label: 'Compléter la livraison', nextStatut: 'LIVRE_COMPLETEMENT', color: 'bg-green-500 hover:bg-green-600', needsQuantityInput: true }
+        { type: 'LIVRER_COMPLETEMENT', label: 'Compléter la livraison', nextStatut: 'LIVRE_COMPLETEMENT', color: 'bg-green-500 hover:bg-green-600', needsQuantityInput: true },
+        { type: 'ANNULER', label: 'Annuler', nextStatut: 'ANNULE', color: 'bg-red-500 hover:bg-red-600' }
       ]
     },
     'LIVRE_COMPLETEMENT': {

@@ -7,6 +7,7 @@ import { ProduitService, ProductResponse } from '../../services/produit.service'
 import { FournisseursService } from '../../services/fournisseurs.service';
 import { ApprovisionnementFormComponent } from '../approvisionnement-form/approvisionnement-form.component';
 import { ApprovisionnementDetailsComponent } from '../approvisionnement-details/approvisionnement-details.component';
+import { StatutValidationService } from '../../services/statut-validation.service';
 
 
 @Component({
@@ -40,7 +41,8 @@ export class ApprovisionnementComponent {
     private approService: ApprovisionnementService,
     private paginationService: PaginationService,
     private produitService: ProduitService,
-    private fournisseurService: FournisseursService
+    private fournisseurService: FournisseursService,
+    public statutValidation: StatutValidationService,
   ) {}
 
   ngOnInit(): void {
@@ -218,6 +220,7 @@ handleSubmit(approData: any) {
 
 
   deleteApprovisionnement(id: number) {
+    
     if (confirm('Êtes-vous sûr de vouloir supprimer cet approvisionnement ?')) {
       this.approService.deleteApprovisionnement(id).subscribe(() => {
         this.approvisionnements = this.approvisionnements.filter(appro => appro.id !== id);

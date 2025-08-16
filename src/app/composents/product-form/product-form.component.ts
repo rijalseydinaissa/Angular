@@ -35,33 +35,36 @@ export class ProductFormComponent {
    });
  }
 
- ngOnInit(){
-   this.categorieService.getCategories().subscribe(categories => {
-     this.categories=categories;
+ ngOnInit() {
+    this.categorieService.getCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
 
-     if (this.productToEdit) {
-      this.isEditMode = true;
-      this.productForm.patchValue({
-       nom: this.productToEdit.nom,
-       prixAchat: this.productToEdit.prixAchat,
-       quantite: this.productToEdit.quantite,
-       categorieId: this.productToEdit.categorie.id,
-       prix: this.productToEdit.prix,
-      });
-      this.productForm.patchValue({
-        nom: this.productToEdit.nom,
-        prixAchat: this.productToEdit.prixAchat,
-        quantite: this.productToEdit.quantite,
-        categorieId: this.productToEdit.categorie.id, // Utiliser categorieId
-        prix: this.productToEdit.prix,
-      });
-      // Forcer la mise à jour du select
-      setTimeout(() => {
-        this.productForm.get('categorieId')?.updateValueAndValidity();
-      });
-    }
-   })
- }
+        if (this.productToEdit) {
+          this.isEditMode = true;
+          this.productForm.patchValue({
+            nom: this.productToEdit.nom,
+            prixAchat: this.productToEdit.prixAchat,
+            quantite: this.productToEdit.quantite,
+            categorieId: this.productToEdit.categorie.id,
+            prix: this.productToEdit.prix,
+          });
+
+          setTimeout(() => {
+            this.productForm.get('categorieId')?.updateValueAndValidity();
+          });
+        }
+      },
+      error: (err) => {
+        const errorResponse = this.alertService.handleHttpError(err);
+        if (errorResponse) {
+          this.alertService.showError(errorResponse.message, errorResponse.errorCode);
+        } else {
+          this.alertService.showError('Erreur lors du chargement des catégories');
+        }
+      }
+    });
+  }
 
  handleClose() {
    this.close.set(!this.close());
@@ -76,37 +79,42 @@ export class ProductFormComponent {
  }
 
  handleSubmit() {
-  if (this.productForm.valid) {
-    this.alertService.showLoading();
+    if (this.productForm.valid) {
+      this.alertService.showLoading(
+        this.isEditMode ? 'Mise à jour du produit...' : 'Création du produit...'
+      );
 
-     // Trouver l'objet catégorie complet basé sur l'ID sélectionné
-     const categorieId = Number(this.productForm.value.categorieId);
-     const categorie = this.categories.find(cat => cat.id === categorieId);
+      const categorieId = Number(this.productForm.value.categorieId);
+      const categorie = this.categories.find(cat => cat.id === categorieId);
 
-     if (!categorie) {
-       this.alertService.showError('Catégorie invalide');
-       return;
-     }
+      if (!categorie) {
+        this.alertService.closeAlert();
+        this.alertService.showError('Catégorie invalide');
+        return;
+      }
 
-
-    const productData = {
-      ...this.productForm.value,
-      prixAchat: Number(this.productForm.value.prixAchat),
-      prix: Number(this.productForm.value.prix),
-      quantite: Number(this.productForm.value.quantite),
-      categorie: categorie // Utiliser l'objet catégorie complet
-    };
-    delete productData.categorieId; // Supprimer l'ID de la catégorie du formulaire
-    
-    if (this.isEditMode) {
-      this.updateProduct(productData);
+      const productData = {
+        ...this.productForm.value,
+        prixAchat: Number(this.productForm.value.prixAchat),
+        prix: Number(this.productForm.value.prix),
+        quantite: Number(this.productForm.value.quantite),
+        categorie: categorie
+      };
+      delete productData.categorieId;
+      
+      if (this.isEditMode) {
+        this.updateProduct(productData);
+      } else {
+        this.createProduct(productData);
+      }
     } else {
-      this.createProduct(productData);
+      // Marquer tous les champs comme touchés pour afficher les erreurs
+      Object.keys(this.productForm.controls).forEach(key => {
+        const control = this.productForm.get(key);
+        control?.markAsTouched();
+      });
     }
   }
-   
-}
-
 createProduct(productData: any){
   this.produitService.createProductWithImage(productData ,this.imageFile).subscribe({
     next: (response) => {
@@ -119,53 +127,59 @@ createProduct(productData: any){
   });
 }
 private updateProduct(productData: any) {
-  if (!this.productToEdit?.id) {
-    this.alertService.showError('Produit invalide');
-    return;
+    if (!this.productToEdit?.id) {
+      this.alertService.closeAlert();
+      this.alertService.showError('Produit invalide');
+      return;
+    }
+
+    const updateData = {
+      id: this.productToEdit.id,
+      nom: productData.nom,
+      prixAchat: parseFloat(productData.prixAchat),
+      prix: parseFloat(productData.prix),
+      quantite: parseInt(productData.quantite),
+      categorie: { id: productData.categorie.id },
+      image: this.productToEdit.image
+    };
+
+    this.produitService.updateProduct(this.productToEdit.id, updateData, this.imageFile)
+      .subscribe({
+        next: (response) => {
+          const updatedProduct = response || updateData;
+          this.productUpdated.emit(updatedProduct);
+          this.produitService.loadProducts();
+          this.handleSuccess(updatedProduct, 'mis à jour');
+        },
+        error: (error) => this.handleError(error)
+      });
   }
 
-  const updateData = {
-    id: this.productToEdit.id,
-    nom: productData.nom,
-    prixAchat: parseFloat(productData.prixAchat),
-    prix: parseFloat(productData.prix),
-    quantite: parseInt(productData.quantite),
-    categorie: { id: productData.categorie.id },
-    image: this.productToEdit.image // Préserver l'image existante
-  };
-
-  this.produitService.updateProduct(this.productToEdit.id, updateData, this.imageFile)
-    .subscribe({
-      next: (response) => {
-        // Utiliser les données envoyées si la réponse est null
-        const updatedProduct = response || updateData;
-        // Émettre la mise à jour
-        this.productUpdated.emit(updatedProduct);
-        // Forcer le rechargement des données
-        this.produitService.loadProducts();
-        this.handleSuccess(updatedProduct, 'mis à jour');
-      },
-      error: (error) => this.handleError(error)
-    });
-}
 
 private handleSuccess(response: any, action: string) {
-  this.alertService.closeAlert();
-  this.alertService.showSuccess(`Le produit a été ${action} avec succès`);
-  this.productForm.reset();
-  this.imageFile = null;
-  this.handleClose();
-}
+    this.alertService.closeAlert();
+    this.alertService.showSuccess(`Le produit a été ${action} avec succès`);
+    this.productForm.reset();
+    this.imageFile = null;
+    this.handleClose();
+  }
 
 private handleError(error: any) {
-  this.alertService.closeAlert();
-  this.alertService.showError(`Impossible de ${this.isEditMode ? 'mettre à jour' : 'créer'} le produit`)
-    .then((result) => {
-      if (result.isConfirmed) {
-        this.handleSubmit();
-      }
-    });
-  this.errorMessage = `Erreur lors de la ${this.isEditMode ? 'mise à jour' : 'création'} du produit. Veuillez réessayer.`;
+    this.alertService.closeAlert();
+    const errorResponse = this.alertService.handleHttpError(error);
+    
+    if (errorResponse) {
+      this.alertService.showError(errorResponse.message, errorResponse.errorCode)
+        .then((result) => {
+          if (result.isConfirmed && errorResponse.errorCode !== 'DUPLICATE_RESOURCE') {
+            this.handleSubmit();
+          }
+        });
+    } else {
+      this.alertService.showError(
+        `Impossible de ${this.isEditMode ? 'mettre à jour' : 'créer'} le produit`
+      );      
+    }
 }
 }
 

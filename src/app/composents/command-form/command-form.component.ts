@@ -16,6 +16,7 @@ interface Product {
   nom: string;
   prix: number;
   image: string;
+  quantite: number;
 }
 
 interface CartItem {
@@ -55,14 +56,18 @@ export class CommandFormComponent implements OnInit {
     this.loadProduits();
   }
 
-  private loadProduits() {
+   private loadProduits() {
     this.produitService.getProducts().subscribe({
       next: (produits) => {
-        console.log(produits);
         this.products = produits;
       },
       error: (err) => {
-        console.error('Erreur lors du chargement des produits:', err);
+        const errorResponse = this.alertService.handleHttpError(err);
+        if (errorResponse) {
+          this.alertService.showError(errorResponse.message, errorResponse.errorCode);
+        } else {
+          this.alertService.showError('Erreur lors du chargement des produits');
+        }
       },
     });
   }
@@ -92,35 +97,70 @@ export class CommandFormComponent implements OnInit {
   }
 
   addToCart() {
-    if (this.commandeForm.valid) {
-      const productId = Number(this.commandeForm.get('productId')?.value);
-      const quantity = Number(this.commandeForm.get('quantity')?.value);
-      const product = this.products.find((p) => p.id === productId);
+  if (this.commandeForm.valid) {
+    const productId = Number(this.commandeForm.get('productId')?.value);
+    const quantity = Number(this.commandeForm.get('quantity')?.value);
+    const product = this.products.find((p) => p.id === productId);
 
-      if (product) {
-        const existingItem = this.cartItems.find(
-          (item) => item.product.id === product.id
+    if (product) {
+      // Vérifier le stock disponible avant d'ajouter au panier
+      const totalQuantityInCart = this.cartItems
+        .filter(item => item.product.id === product.id)
+        .reduce((total, item) => total + item.quantity, 0);
+
+      if (totalQuantityInCart + quantity > product.quantite) {
+        this.alertService.showError(
+          `Stock insuffisant pour le produit ${product.nom}. Stock disponible : ${product.quantite}, Quantité totale demandée : ${totalQuantityInCart + quantity}`,
+          'INSUFFICIENT_STOCK'
         );
-
-        if (existingItem) {
-          existingItem.quantity += quantity;
-        } else {
-          this.cartItems.push({ product, quantity });
-        }
-
-        this.currentTotal = 0;
+        return;
       }
-    }else{
-      Object.keys(this.commandeForm.controls).forEach(key => {
-        const control = this.commandeForm.get(key);
-        control?.markAsTouched();
-      });
+
+      const existingItem = this.cartItems.find(
+        (item) => item.product.id === product.id
+      );
+
+      if (existingItem) {
+        existingItem.quantity += quantity;
+      } else {
+        this.cartItems.push({ product, quantity });
+      }
+
+      this.currentTotal = 0;
+      
+      // // Réinitialiser le formulaire d'ajout CORRECTEMENT
+      // this.commandeForm.patchValue({
+      //   productId: null,
+      //   quantity: 1
+      // });
+      
+      // // CORRECTION : Marquer les champs comme non touchés après réinitialisation
+      // this.commandeForm.get('productId')?.markAsUntouched();
+      // this.commandeForm.get('quantity')?.markAsUntouched();
+      
+      // // Optionnel : Réinitialiser complètement l'état pristine
+      // this.commandeForm.get('productId')?.markAsPristine();
+      // this.commandeForm.get('quantity')?.markAsPristine();
     }
+  } else {
+    Object.keys(this.commandeForm.controls).forEach(key => {
+      const control = this.commandeForm.get(key);
+      control?.markAsTouched();
+    });
   }
+}
 
   updateCartItemQuantity(item: CartItem, change: number) {
     const newQuantity = item.quantity + change;
+    
     if (newQuantity > 0) {
+      // Vérifier que la nouvelle quantité ne dépasse pas le stock
+      if (newQuantity > item.product.quantite) {
+        this.alertService.showWarning(
+          `Stock insuffisant pour le produit ${item.product.nom}. Stock disponible : ${item.product.quantite}`
+        );
+        return;
+      }
       item.quantity = newQuantity;
     }
   }
@@ -132,9 +172,10 @@ export class CommandFormComponent implements OnInit {
     }
   }
 
-  handleSubmit() {
+ handleSubmit() {
     if (this.commandeForm.valid && this.cartItems.length > 0) {
-      this.alertService.showLoading();
+      this.alertService.showLoading('Création de la commande...');
+      
       const commande = {
         date: new Date(),
         status: 'NONREGLE',
@@ -151,15 +192,32 @@ export class CommandFormComponent implements OnInit {
           this.alertService.showSuccess('La commande a été créée avec succès');
           this.commandeForm.reset();
           this.cartItems = [];
-          this.produitService.loadProducts();
+          this.currentTotal = 0;
+          // Recharger les produits pour mettre à jour les stocks
+          this.loadProduits();
         },
         error: (err) => {
           this.alertService.closeAlert();
-          this.alertService.showError('Impossible de créer la commande').then((result) => {
-            if (result.isConfirmed) {
-              this.handleSubmit();
-            }
-          });
+          const errorResponse = this.alertService.handleHttpError(err);
+          
+          if (errorResponse) {
+            this.alertService.showError(errorResponse.message, errorResponse.errorCode)
+              .then((result) => {
+                if (result.isConfirmed) {
+                  // Recharger les produits si c'est un problème de stock
+                  if (errorResponse.errorCode === 'INSUFFICIENT_STOCK') {
+                    this.loadProduits();
+                  }
+                }
+              });
+          } else {
+            this.alertService.showError('Impossible de créer la commande')
+              .then((result) => {
+                if (result.isConfirmed) {
+                  this.handleSubmit();
+                }
+              });
+          }
         },
       });
     } else {

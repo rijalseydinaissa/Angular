@@ -1,5 +1,6 @@
 import { PaginationService } from './../../services/pagination.service';
 import { ProduitService } from './../../services/produit.service';
+import { AlertService } from '../../services/alert.service';
 import { Component, ElementRef, Signal, signal, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ProductFormComponent } from '../product-form/product-form.component';
@@ -42,7 +43,7 @@ export class ProduitComponent implements OnInit {
   totalPages = 0;
  
 
-  constructor(private produitService: ProduitService, private paginationService: PaginationService, private categorieService: CategorieService) {}
+  constructor(private produitService: ProduitService, private paginationService: PaginationService, private categorieService: CategorieService,private alertService: AlertService) {}
 
   ngOnInit(): void {
     this.produitService.getProducts().subscribe(data => {
@@ -126,19 +127,40 @@ export class ProduitComponent implements OnInit {
     this.currentPage = 1;
   }
 
-  deleteProduct(productId: number) {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce produit ?')) {
-      this.produitService.deleteProduct(productId).subscribe(
-        () => {
+ deleteProduct(productId: number) {
+  this.alertService.showConfirmation(
+    'Cette action supprimera définitivement le produit. Voulez-vous continuer ?',
+    'Oui, supprimer'
+  ).then((result) => {
+    if (result.isConfirmed) {
+      this.alertService.showLoading('Suppression en cours...');
+      
+      this.produitService.deleteProduct(productId).subscribe({
+        next: () => {
+          this.alertService.closeAlert();
+          this.alertService.showSuccess('Produit supprimé avec succès');
+          
+          // Mettre à jour la liste des produits
           this.products = this.products.filter(p => p.id !== productId);
           this.filterProducts();
         },
-        error => {
+        error: (error) => {
+          this.alertService.closeAlert();
           console.error('Erreur lors de la suppression du produit:', error);
+          
+          const errorResponse = this.alertService.handleHttpError(error);
+          
+          if (errorResponse) {
+            this.alertService.showError(errorResponse.message, errorResponse.errorCode);
+          } else {
+            this.alertService.showError('Impossible de supprimer le produit');
+          }
         }
-      );
+      });
     }
-  }
+  });
+}
+
 
   handleProductCreated(newProduct: Product) {
     // Rafraîchir la liste des produits après une création

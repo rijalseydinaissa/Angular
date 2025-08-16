@@ -17,6 +17,7 @@ interface Categorie {
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class CategorieComponent implements OnInit {
+[x: string]: any;
   categories: CategorieResponse[] = [];
   categorieForm: FormGroup;
   isEditMode = false;
@@ -138,6 +139,10 @@ export class CategorieComponent implements OnInit {
   }
   getVisiblePages(): number[] {
     return this.paginationService.getVisiblePages(this.currentPage, this.totalPages);
+  }
+  // In your component class
+  getMaxVisibleIndex(): number {
+    return Math.min(this.currentPage * this.pageSize, this.categories.length);
   }
   // changePageSize() {
   //   // Convertir pageSize en nombre car les valeurs de select sont souvent des chaînes
