@@ -16,7 +16,7 @@ interface UserInfo {
 export class AuthService {
 
   // private apiUrl = 'http://localhost:8081'; 
-  private apiUrl = 'http://51.44.243.177:8081'; 
+  private apiUrl = 'http://13.38.89.80:8081'; 
   public tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
   public roleSubject = new BehaviorSubject<string | null>(localStorage.getItem('role'));
 

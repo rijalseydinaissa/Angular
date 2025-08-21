@@ -8,7 +8,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 export class ApiService {
 
   //  private baseUrl = 'http://localhost:8081';
-  private baseUrl = 'http://51.44.243.177:8081';
+  private baseUrl = 'http://13.38.89.80:8081';
 
   constructor(private http: HttpClient) { }
 
