@@ -62,8 +62,10 @@
           <td>
             <p class="p-2 rounded font-bold text-lg text-white"
                [ngClass]="{
-                 'bg-green': product.statut === 'SUFFISANT',
-                 'bg-red': product.statut !== 'SUFFISANT'
+                 'bg-green': product.statut === 'EN_STOCK',
+                 'bg-red': product.statut === 'RUPTURE',
+                 'bg-yellow-400': product.statut === 'FAIBLE_STOCK',
+                
                }">
               {{ product.statut }}
             </p>

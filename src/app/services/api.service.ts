@@ -7,8 +7,9 @@ import { catchError, Observable, throwError } from 'rxjs';
 })
 export class ApiService {
 
-  //  private baseUrl = 'http://localhost:8081';
-  private baseUrl = 'http://13.38.89.80:8081';
+    private baseUrl = 'http://localhost:8081';
+  // private baseUrl = 'http://13.38.89.80:8081';
+  // private baseUrl = 'http://51.44.243.177:80811';
 
   constructor(private http: HttpClient) { }
 
@@ -72,7 +73,6 @@ export class ApiService {
       catchError(this.handleError)
     );
   }
-
   // Méthode dédiée pour les uploads de fichiers
   uploadFile<T>(endpoint: string, formData: FormData): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}/${endpoint}`, formData, {

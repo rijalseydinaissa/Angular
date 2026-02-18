@@ -1,1 +1,227 @@
-<p>register works!</p>
+<div class="min-h-screen flex">
+  <!-- Section gauche - Formulaire d'inscription -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+    <div class="w-full max-w-md">
+      <!-- En-tête avec logo -->
+      <div class="mb-8">
+        <div class="flex items-center mb-6">
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+          </div>
+          <h1 class="ml-3 text-2xl font-bold text-gray-900">GestockPro</h1>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Créer un compte</h2>
+        <p class="text-gray-600">Rejoignez-nous pour gérer votre stock efficacement</p>
+      </div>
+
+      <!-- Formulaire -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-5">
+        <!-- Nom et Prénom sur la même ligne -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="nom" class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
+            <input
+              type="text"
+              id="nom"
+              formControlName="nom"
+              [ngClass]="{
+                'border-red-300 focus:border-red-500 focus:ring-red-500': f['nom'].invalid && (f['nom'].dirty || f['nom'].touched),
+                'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !(f['nom'].invalid && (f['nom'].dirty || f['nom'].touched))
+              }"
+              class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 placeholder-gray-400"
+              placeholder="Dupont">
+            <p *ngIf="f['nom'].invalid && (f['nom'].dirty || f['nom'].touched)" class="text-red-500 text-xs mt-1.5">
+              Nom requis (min. 2 caractères)
+            </p>
+          </div>
+
+          <div>
+            <label for="prenom" class="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
+            <input
+              type="text"
+              id="prenom"
+              formControlName="prenom"
+              [ngClass]="{
+                'border-red-300 focus:border-red-500 focus:ring-red-500': f['prenom'].invalid && (f['prenom'].dirty || f['prenom'].touched),
+                'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !(f['prenom'].invalid && (f['prenom'].dirty || f['prenom'].touched))
+              }"
+              class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 placeholder-gray-400"
+              placeholder="Jean">
+            <p *ngIf="f['prenom'].invalid && (f['prenom'].dirty || f['prenom'].touched)" class="text-red-500 text-xs mt-1.5">
+              Prénom requis (min. 2 caractères)
+            </p>
+          </div>
+        </div>
+
+        <!-- Champ Email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Adresse email</label>
+          <div class="relative">
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              [ngClass]="{
+                'border-red-300 focus:border-red-500 focus:ring-red-500': f['email'].invalid && (f['email'].dirty || f['email'].touched),
+                'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !(f['email'].invalid && (f['email'].dirty || f['email'].touched))
+              }"
+              class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 placeholder-gray-400"
+              placeholder="nom@example.com">
+            <svg *ngIf="f['email'].valid && f['email'].touched"
+                 class="w-5 h-5 text-green-500 absolute right-3 top-3.5"
+                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <p *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" class="text-red-500 text-sm mt-1.5">
+            <span *ngIf="f['email'].errors?.['required']">L'email est requis</span>
+            <span *ngIf="f['email'].errors?.['email']">Veuillez entrer un email valide</span>
+          </p>
+        </div>
+
+        <!-- Champ Rôle -->
+        <!-- ✅ Les valeurs correspondent EXACTEMENT à l'enum Role Java : ADMIN, GESTIONNAIRE_STOCK, USER -->
+        <div>
+          <label for="role" class="block text-sm font-medium text-gray-700 mb-2">Rôle</label>
+          <select
+            id="role"
+            formControlName="role"
+            [ngClass]="{
+              'border-red-300 focus:border-red-500 focus:ring-red-500': f['role'].invalid && (f['role'].dirty || f['role'].touched),
+              'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !(f['role'].invalid && (f['role'].dirty || f['role'].touched))
+            }"
+            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900">
+            <option value="">Sélectionnez un rôle</option>
+            <!-- ⚠️ IMPORTANT : Les valeurs doivent correspondre EXACTEMENT à l'enum Role.java -->
+            <option value="ADMIN">Administrateur</option>
+            <option value="GESTIONNAIRE_STOCK">Gestionnaire de stock</option>
+            <option value="USER">Utilisateur</option>
+          </select>
+          <p *ngIf="f['role'].invalid && (f['role'].dirty || f['role'].touched)" class="text-red-500 text-sm mt-1.5">
+            Le rôle est requis
+          </p>
+        </div>
+
+        <!-- Champ Mot de passe -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Mot de passe</label>
+          <input
+            type="password"
+            id="password"
+            formControlName="password"
+            [ngClass]="{
+              'border-red-300 focus:border-red-500 focus:ring-red-500': f['password'].invalid && (f['password'].dirty || f['password'].touched),
+              'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !(f['password'].invalid && (f['password'].dirty || f['password'].touched))
+            }"
+            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 placeholder-gray-400"
+            placeholder="••••••••">
+          <p *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" class="text-red-500 text-sm mt-1.5">
+            <span *ngIf="f['password'].errors?.['required']">Le mot de passe est requis</span>
+            <span *ngIf="f['password'].errors?.['minlength']">Minimum 6 caractères</span>
+          </p>
+        </div>
+
+        <!-- Champ Confirmation mot de passe -->
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">Confirmer le mot de passe</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            [ngClass]="{
+              'border-red-300 focus:border-red-500 focus:ring-red-500': (f['confirmPassword'].invalid || registerForm.errors?.['passwordMismatch']) && (f['confirmPassword'].dirty || f['confirmPassword'].touched),
+              'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !((f['confirmPassword'].invalid || registerForm.errors?.['passwordMismatch']) && (f['confirmPassword'].dirty || f['confirmPassword'].touched))
+            }"
+            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 placeholder-gray-400"
+            placeholder="••••••••">
+          <p *ngIf="(f['confirmPassword'].invalid || registerForm.errors?.['passwordMismatch']) && (f['confirmPassword'].dirty || f['confirmPassword'].touched)" class="text-red-500 text-sm mt-1.5">
+            <span *ngIf="f['confirmPassword'].errors?.['required']">La confirmation est requise</span>
+            <span *ngIf="registerForm.errors?.['passwordMismatch'] && !f['confirmPassword'].errors?.['required']">Les mots de passe ne correspondent pas</span>
+          </p>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div *ngIf="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-start">
+          <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>{{ error }}</span>
+        </div>
+
+        <!-- Message de succès -->
+        <div *ngIf="success" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm flex items-start">
+          <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>{{ success }}</span>
+        </div>
+
+        <!-- Bouton d'inscription -->
+        <button
+          type="submit"
+          [disabled]="loading || registerForm.invalid"
+          class="w-full py-3.5 px-4 bg-primary text-white font-medium rounded-lg transition-all duration-200 shadow-lg shadow-blue-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex justify-center items-center">
+          <svg *ngIf="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          {{ loading ? 'Création du compte...' : 'Créer mon compte' }}
+        </button>
+      </form>
+
+      <div class="mt-8 text-center">
+        <p class="text-sm text-gray-600">
+          Vous avez déjà un compte ?
+          <a routerLink="/login" class="text-blue-600 hover:text-blue-800 font-medium transition-colors ml-1">Se connecter</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section droite - Branding -->
+  <div class="hidden lg:flex lg:w-1/2 bg-primary items-center justify-center p-12 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+    </div>
+    <div class="relative z-10 text-white max-w-lg text-center">
+      <div class="mb-8">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </div>
+        <h2 class="text-4xl font-bold mb-4">Rejoignez notre plateforme</h2>
+        <p class="text-blue-100 text-lg leading-relaxed">Commencez à gérer votre stock de manière professionnelle avec nos outils avancés.</p>
+      </div>
+      <div class="space-y-4 mt-12">
+        <div class="flex items-center text-left bg-white/5 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+            </svg>
+          </div>
+          <span class="text-blue-50">Sécurité et confidentialité garanties</span>
+        </div>
+        <div class="flex items-center text-left bg-white/5 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <span class="text-blue-50">Configuration rapide en quelques minutes</span>
+        </div>
+        <div class="flex items-center text-left bg-white/5 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <span class="text-blue-50">Support technique disponible 24/7</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

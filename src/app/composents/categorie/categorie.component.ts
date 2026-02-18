@@ -1,7 +1,7 @@
 import { PaginationService } from './../../services/pagination.service';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategorieService, CategorieResponse } from '../../services/categorie.service';
 import { AlertService } from '../../services/alert.service';
 
@@ -14,7 +14,7 @@ interface Categorie {
   templateUrl: './categorie.component.html',
   styleUrls: ['./categorie.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule,FormsModule]
 })
 export class CategorieComponent implements OnInit {
 [x: string]: any;

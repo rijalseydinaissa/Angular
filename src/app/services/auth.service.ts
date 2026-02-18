@@ -15,8 +15,8 @@ interface UserInfo {
 })
 export class AuthService {
 
-  // private apiUrl = 'http://localhost:8081'; 
-  private apiUrl = 'http://13.38.89.80:8081'; 
+  private apiUrl = 'http://localhost:8081'; 
+  // private apiUrl = 'http://13.38.89.80:8081'; 
   public tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
   public roleSubject = new BehaviorSubject<string | null>(localStorage.getItem('role'));
 
@@ -71,10 +71,10 @@ export class AuthService {
     return this.getRole() === 'ROLE_ADMIN'; // Adaptez 'admin' selon le rôle utilisé dans votre backend
   }
   isSERVEUR(): boolean {
-    return this.getRole() === 'ROLE_SERVEUR'; // Adaptez 'admin' selon le rôle utilisé dans votre backend
+    return this.getRole() === 'ROLE_GESTIONNAIRE_STOCK'; // Adaptez 'admin' selon le rôle utilisé dans votre backend
   }
-  isCUISINIER(): boolean {
-    return this.getRole() === 'ROLE_CUISINIER'; // Adaptez 'admin' selon le rôle utilisé dans votre backend
+ isCUISINIER(): boolean {
+    return this.getRole() === 'ROLE_USER'; // Adaptez 'admin' selon le rôle utilisé dans votre backend
   }
 
   logout(): void {
