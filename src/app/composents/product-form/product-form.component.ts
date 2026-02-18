@@ -1,7 +1,7 @@
 import { ProduitService } from './../../services/produit.service';
 import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormsModule, ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { AlertService } from '../../services/alert.service';
 import { CategorieResponse ,CategorieService } from '../../services/categorie.service';
 
@@ -32,6 +32,7 @@ export class ProductFormComponent {
      quantite: ['', [Validators.required, Validators.min(1)]],
      categorieId: ['', [Validators.required]],
      prix: ['', [Validators.required, Validators.min(1)]],
+     seuilAlerte: new FormControl(5, [Validators.min(1)])
    });
  }
 

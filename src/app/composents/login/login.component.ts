@@ -8,9 +8,8 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
-  // Pas besoin de styleUrls car nous utilisons Tailwind
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -20,7 +19,7 @@ export class LoginComponent {
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    public router: Router // Passage en public pour utilisation dans le template
+    public router: Router
   ) {
     // Rediriger si déjà connecté
     if (this.authService.isLoggedIn()) {
@@ -39,14 +38,14 @@ export class LoginComponent {
     if (this.loginForm.invalid) {
       return;
     }
-  
+
     this.loading = true;
     this.error = '';
-  
+
     this.authService.login(this.f['email'].value, this.f['password'].value)
       .subscribe({
         next: () => {
-            this.router.navigate(['/commandes']);
+          this.router.navigate(['/commandes']);
         },
         error: error => {
           this.error = 'Email ou mot de passe incorrect';
@@ -55,7 +54,6 @@ export class LoginComponent {
       });
   }
 
-  // Méthode pour gérer l'oubli de mot de passe
   forgotPassword(): void {
     this.router.navigate(['/reset-password']);
   }

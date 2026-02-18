@@ -29,3 +29,93 @@ router-outlet + * {
     display: block;
     height: 100%;
   }
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.container > div {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Hover effects pour les lignes du tableau */
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+/* Personnalisation de la scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e0;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Style pour les tooltips */
+[title] {
+  position: relative;
+  cursor: help;
+}
+
+/* Amélioration du focus pour l'accessibilité */
+*:focus {
+  outline: none;
+  ring: 2px solid #3b82f6;
+  ring-offset: 2px;
+}
+
+/* Style pour les champs de formulaire en erreur */
+input.ng-invalid.ng-touched {
+  border-color: #ef4444;
+}
+
+/* Animation pour les boutons */
+button {
+  transition: all 0.2s ease;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* Effet de glassmorphisme pour les cartes */
+.bg-white {
+  backdrop-filter: blur(10px);
+}
+
+/* Amélioration de la typographie */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.025em;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+  .grid {
+    gap: 1rem;
+  }
+  
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+}  

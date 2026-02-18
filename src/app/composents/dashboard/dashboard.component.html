@@ -1,10 +1,13 @@
-<div class="p-4 flex flex-col h-full">
-  <!-- Filtres de date (version compacte) -->
+<!-- <div class="p-4 flex flex-col h-full">
+  
   <div class="bg-white p-2 rounded-lg shadow-sm mb-2 border border-gray-200">
     <h2 class="text-lg font-bold mb-1 text-gray-800">Filtrer les commandes</h2>
     <form [formGroup]="filterForm" class="flex flex-wrap items-center gap-2">
       <div class="flex-1 min-w-[180px]">
-        <select formControlName="filterType" class="w-full p-2 text-sm border rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+        <select
+          formControlName="filterType"
+          class="w-full p-2 text-sm border rounded-lg focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+        >
           <option value="all">Toutes les commandes</option>
           <option value="jour">Par jour</option>
           <option value="semaine">Cette semaine</option>
@@ -12,45 +15,59 @@
           <option value="periode">Période personnalisée</option>
         </select>
       </div>
+
       
-      <!-- Sélecteur de date pour le filtre par jour (plus compact) -->
       <ng-container *ngIf="filterForm.get('filterType')?.value === 'jour'">
         <div class="flex-1 min-w-[180px]">
-          <input type="date" formControlName="dateJour" class="w-full p-2 text-sm border rounded-lg focus:ring-1 focus:ring-blue-500">
+          <input
+            type="date"
+            formControlName="dateJour"
+            class="w-full p-2 text-sm border rounded-lg focus:ring-1 focus:ring-blue-500"
+          />
         </div>
       </ng-container>
-      
-      <!-- Dates début/fin pour période personnalisée (plus compactes) -->
+
       <ng-container *ngIf="filterForm.get('filterType')?.value === 'periode'">
         <div class="flex items-center gap-2 flex-1 min-w-[180px]">
-          <input type="date" formControlName="dateDebut" placeholder="Date début" class="w-full p-2 text-sm border rounded-lg">
+          <input
+            type="date"
+            formControlName="dateDebut"
+            placeholder="Date début"
+            class="w-full p-2 text-sm border rounded-lg"
+          />
           <span class="text-gray-500">-</span>
-          <input type="date" formControlName="dateFin" placeholder="Date fin" class="w-full p-2 text-sm border rounded-lg">
+          <input
+            type="date"
+            formControlName="dateFin"
+            placeholder="Date fin"
+            class="w-full p-2 text-sm border rounded-lg"
+          />
         </div>
       </ng-container>
-      
-      <!-- Bouton appliquer -->
-      <!-- <button type="submit" class="bg-primary text-white p-2 rounded-lg text-sm hover:bg-primary-dark">
-        Appliquer
-      </button> -->
+
+     
     </form>
   </div>
 
-  <!-- Cards statistiques -->
-  <div class="flex items-center justify-between w-full mt-1 mb-1">
+  <div class="grid grid-cols-4 gap-2 mb-2">
     <app-stats-card
       *ngFor="let stat of stats"
-      class="w-1/4 px-2"
       [title]="stat.title"
       [value]="stat.value"
       [icon]="stat.icon"
-    ></app-stats-card>
+    >
+    </app-stats-card>
   </div>
 
-  <!-- Contenu principal (avec hauteur ajustée) -->
-  <div class="flex flex-col md:flex-row w-full gap-4 mt-2" style="min-height: 400px; height: auto;">
-    <!-- Recent Sales Section -->
-    <div class="flex flex-col bg-primary rounded flex-1 p-2 text-white h-full overflow-auto">
+  
+  <div
+    class="flex flex-col md:flex-row w-full gap-4 mt-2"
+    style="min-height: 400px; height: auto"
+  >
+ 
+    <div
+      class="flex flex-col bg-primary rounded flex-1 p-2 text-white h-full overflow-auto"
+    >
       <p class="text-xl font-bold mb-2">Ventes Recentes</p>
       <div class="flex-grow overflow-auto">
         <table class="w-full">
@@ -64,46 +81,247 @@
           </thead>
           <tbody>
             <tr *ngFor="let vente of ventes" class="hover:bg-primary-light">
-              <td class="px-4 py-2">{{vente.date}}</td>
-              <td class="px-4 py-2">{{vente.produit}}</td>
-              <td class="px-4 py-2 text-center">{{vente.quantite}}</td>
-              <td class="px-4 py-2 text-center">{{vente.prixUnitaire}}</td>
+              <td class="px-4 py-2">{{ vente.date }}</td>
+              <td class="px-4 py-2">{{ vente.produit }}</td>
+              <td class="px-4 py-2 text-center">{{ vente.quantite }}</td>
+              <td class="px-4 py-2 text-center">{{ vente.prixUnitaire }}</td>
             </tr>
             <tr *ngIf="ventes.length === 0">
-              <td colspan="4" class="px-4 py-2 text-center">Aucune vente pour cette période</td>
+              <td colspan="4" class="px-4 py-2 text-center">
+                Aucune vente pour cette période
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
-    <!-- Products Section -->
-    <div class="flex flex-col bg-secondary rounded p-2 text-white w-full md:w-1/3 h-full overflow-auto">
+   
+    <div
+      class="flex flex-col bg-secondary rounded p-2 text-white w-full md:w-1/3 h-full overflow-auto"
+    >
       <h1 class="text-2xl font-bold text-center mb-2">Produits</h1>
       <div class="flex-grow flex flex-col justify-between">
-        <!-- Most Sold Products -->
+       
         <div class="flex flex-col gap-1">
           <h3 class="text-xl font-bold text-green mb-2">Les plus vendues</h3>
           <div class="space-y-2">
-            <div *ngFor="let produits of plusVendues"
-              class="flex justify-between items-center p-2 hover:bg-secondary-light rounded">
-              <p>{{produits.produit}}</p>
-              <p>{{produits.quantite}}</p>
+            <div
+              *ngFor="let produits of plusVendues"
+              class="flex justify-between items-center p-2 hover:bg-secondary-light rounded"
+            >
+              <p>{{ produits.produit }}</p>
+              <p>{{ produits.quantite }}</p>
             </div>
           </div>
         </div>
-        <!-- Running Low Products -->
+       
         <div class="flex flex-col gap-1">
           <h3 class="text-xl font-bold text-red mb-2">Bientot terminee</h3>
           <div class="space-y-2">
-            <div *ngFor="let termine of bientotTermine"
-              class="flex justify-between items-center p-2 hover:bg-secondary-light rounded">
-              <p>{{termine.produit}}</p>
-              <p>{{termine.quantite}}</p>
+           
+            <div
+              *ngFor="let termine of bientotTermine"
+              class="flex justify-between items-center p-2 rounded"
+              [ngClass]="
+                termine.quantite === 0
+                  ? 'bg-red-700'
+                  : 'hover:bg-secondary-light'
+              "
+            >
+              <p>{{ termine.produit }}</p>
+              <p class="text-sm">
+                {{ termine.quantite }} / seuil: {{ termine.seuil }}
+              </p>
+            </div>
+            
+            <div
+              class="flex flex-col bg-gray-800 rounded p-2 text-white w-full mt-2"
+            >
+              <h2 class="text-xl font-bold mb-2">
+                Derniers Approvisionnements
+              </h2>
+              <table class="w-full">
+                <thead>
+                  <tr class="text-left text-gray-300">
+                    <th class="px-2 py-1">Date</th>
+                    <th class="px-2 py-1">Produit</th>
+                    <th class="px-2 py-1">Quantité</th>
+                    <th class="px-2 py-1">Motif</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let appro of approvisionnements"
+                    class="border-t border-gray-700"
+                  >
+                    <td class="px-2 py-1">
+                      {{ appro.date | date: "dd/MM/yyyy" }}
+                    </td>
+                    <td class="px-2 py-1">{{ appro.produit }}</td>
+                    <td class="px-2 py-1">{{ appro.quantite }}</td>
+                    <td class="px-2 py-1">{{ appro.motif }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div> -->
+<div class="p-4 flex flex-col h-full gap-3">
+
+  <!-- ── Loader ── -->
+  <div *ngIf="isLoading" class="flex justify-center items-center py-8">
+    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
+    <span class="ml-3 text-gray-600">Chargement...</span>
+  </div>
+
+  <!-- ── Erreur ── -->
+  <div *ngIf="errorMessage && !isLoading"
+    class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+    {{ errorMessage }}
+  </div>
+
+  <ng-container *ngIf="!isLoading">
+
+    <!-- ── Filtre période ── -->
+    <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+      <h2 class="text-lg font-bold mb-2 text-gray-800">Période</h2>
+      <form [formGroup]="filterForm">
+        <select formControlName="filterType"
+          class="w-full md:w-64 p-2 text-sm border rounded-lg
+                 focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+          <option value="all">Toutes les périodes</option>
+          <option value="jour">Aujourd'hui</option>
+          <option value="semaine">Cette semaine</option>
+          <option value="mois">Ce mois</option>
+          <option value="trimestre">Ce trimestre</option>
+          <option value="annee">Cette année</option>
+        </select>
+      </form>
+    </div>
+
+    <!-- ── Cards statistiques (4 cards) ── -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <app-stats-card
+        *ngFor="let stat of stats"
+        [title]="stat.title"
+        [value]="stat.value"
+        [icon]="stat.icon">
+      </app-stats-card>
+    </div>
+
+    <!-- ── Ligne principale : Ventes récentes + Produits ── -->
+    <div class="flex flex-col md:flex-row gap-3">
+
+      <!-- Produits les plus vendus + Alertes -->
+      <div class="flex flex-col bg-secondary rounded p-3 text-white w-full md:w-1/3 gap-4">
+
+        <!-- Plus vendus -->
+        <div>
+          <h3 class="text-lg font-bold text-green-300 mb-2">
+            🏆 Plus vendus
+          </h3>
+          <div *ngIf="plusVendues.length === 0"
+            class="text-gray-300 text-sm text-center py-2">
+            Aucune vente sur cette période
+          </div>
+          <div *ngFor="let p of plusVendues; let i = index"
+            class="flex justify-between items-center p-2
+                   hover:bg-white hover:bg-opacity-10 rounded mb-1">
+            <div class="flex items-center gap-2">
+              <!-- <span class="text-xs font-bold text-yellow-300">
+                #{{ i + 1 }}
+              </span> -->
+              <div>
+                <p class="text-sm font-medium">{{ p.nom }}</p>
+                <p class="text-xs text-gray-300">{{ p.code }}</p>
+              </div>
+            </div>
+            <span class="text-sm font-bold">{{ p.quantiteTotale }} u.</span>
+          </div>
+        </div>
+
+        <!-- Produits en alerte -->
+        <div>
+          <h3 class="text-lg font-bold text-red-300 mb-2">
+            ⚠️ Alertes stock
+          </h3>
+          <div *ngIf="bientotTermine.length === 0"
+            class="text-gray-300 text-sm text-center py-2">
+            Aucun produit en alerte
+          </div>
+          <div *ngFor="let p of bientotTermine"
+            class="flex justify-between items-center p-2
+                   hover:bg-white hover:bg-opacity-10 rounded mb-1">
+            <div>
+              <p class="text-sm font-medium">{{ p.nom }}</p>
+              <p class="text-xs text-gray-300">{{ p.code }}</p>
+            </div>
+            <div class="flex flex-col items-end gap-1">
+              <span class="text-sm font-bold">{{ p.quantiteActuelle }} u.</span>
+              <span class="text-xs px-2 py-0.5 rounded-full"
+                [ngClass]="getStatutClass(p.statut)">
+                {{ getStatutLabel(p.statut) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Derniers approvisionnements -->
+      <div class="flex flex-col bg-primary rounded flex-1 p-3 text-white">
+        <h2 class="text-lg font-bold mb-2">📥 Derniers Approvisionnements</h2>
+
+        <div *ngIf="approvisionnements.length === 0"
+          class="text-center text-gray-300 py-4">
+          Aucun approvisionnement sur cette période
+        </div>
+
+        <div class="flex-grow overflow-auto" *ngIf="approvisionnements.length > 0">
+          <table class="w-full text-sm">
+            <thead class="sticky top-0 bg-primary z-10">
+              <tr class="text-left text-gray-300 border-b border-white border-opacity-20">
+                <th class="px-3 py-2">Date</th>
+                <th class="px-3 py-2">Produit</th>
+                <th class="px-3 py-2">Quantité</th>
+                <th class="px-3 py-2">Motif</th>
+                <th class="px-3 py-2">Utilisateur</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let appro of approvisionnements"
+                class="border-b border-white border-opacity-10
+                       hover:bg-white hover:bg-opacity-10">
+                <td class="px-3 py-2 text-gray-300 text-xs">
+                  {{ formatDate(appro.date) }}
+                </td>
+                <td class="px-3 py-2">
+                  <p class="font-medium">{{ appro.produitNom }}</p>
+                  <p class="text-xs text-gray-300">{{ appro.produitCode }}</p>
+                </td>
+                <td class="px-3 py-2 font-bold text-green-300">
+                  +{{ appro.quantite }}
+                </td>
+                <td class="px-3 py-2">
+                  <span class="text-xs px-2 py-1 bg-white bg-opacity-20 rounded-full">
+                    {{ appro.motif }}
+                  </span>
+                </td>
+                <td class="px-3 py-2 text-gray-300 text-xs">
+                  {{ appro.utilisateur }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+
+  </ng-container>
 </div>

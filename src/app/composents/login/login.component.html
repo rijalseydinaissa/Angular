@@ -1,45 +1,62 @@
-<div class="h-full flex items-center justify-center bg-gradient-to-br from-indigo-50 to-blue-100 p-4">
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-xl">
-      <!-- Logo/Titre -->
-      <div class="text-center mb-8"> 
-        <h1 class="text-3xl font-bold text-indigo-900">Bienvenue Chez NGB Stock</h1>
-        <p class="text-gray-500 mt-2">Connectez-vous à votre espace professionnel</p>
+<div class="min-h-screen flex">
+  <!-- Section gauche - Formulaire de connexion -->
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
+    <div class="w-full max-w-md">
+      <!-- En-tête avec logo -->
+      <div class="mb-8">
+        <div class="flex items-center mb-6">
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+          </div>
+          <h1 class="ml-3 text-2xl font-bold text-gray-900">GestockPro</h1>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Bienvenue</h2>
+        <p class="text-gray-600">Connectez-vous pour accéder à votre tableau de bord</p>
       </div>
-  
+
       <!-- Formulaire -->
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-5">
         <!-- Champ Email -->
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email professionnel</label>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+            Adresse email
+          </label>
           <div class="relative">
             <input 
               type="email" 
               id="email" 
               formControlName="email"
               [ngClass]="{
-                'border-red-500': f['email'].invalid && (f['email'].dirty || f['email'].touched),
-                'border-green-500': f['email'].valid && f['email'].touched
+                'border-red-300 focus:border-red-500 focus:ring-red-500': f['email'].invalid && (f['email'].dirty || f['email'].touched),
+                'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !(f['email'].invalid && (f['email'].dirty || f['email'].touched))
               }"
-              class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
-              placeholder="votre@email.com">
+              class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 placeholder-gray-400"
+              placeholder="nom@example.com">
             <svg *ngIf="f['email'].valid && f['email'].touched" 
                  class="w-5 h-5 text-green-500 absolute right-3 top-3.5" 
                  fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
-          <div *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" 
-               class="text-red-500 text-xs mt-1 ml-1">
-            <span *ngIf="f['email'].errors?.['required']">Email requis</span>
-            <span *ngIf="f['email'].errors?.['email']">Format email invalide</span>
-          </div>
+          <p *ngIf="f['email'].invalid && (f['email'].dirty || f['email'].touched)" 
+             class="text-red-500 text-sm mt-1.5">
+            <span *ngIf="f['email'].errors?.['required']">L'email est requis</span>
+            <span *ngIf="f['email'].errors?.['email']">Veuillez entrer un email valide</span>
+          </p>
         </div>
-  
+
         <!-- Champ Mot de passe -->
         <div>
-          <div class="flex justify-between items-center mb-1">
-            <label for="password" class="block text-sm font-medium text-gray-700">Mot de passe</label>
-            <button type="button" (click)="forgotPassword()" class="text-xs text-indigo-600 hover:text-indigo-800">
+          <div class="flex justify-between items-center mb-2">
+            <label for="password" class="block text-sm font-medium text-gray-700">
+              Mot de passe
+            </label>
+            <button 
+              type="button" 
+              (click)="forgotPassword()" 
+              class="text-sm text-blue-600 hover:text-blue-800 transition-colors">
               Mot de passe oublié ?
             </button>
           </div>
@@ -48,42 +65,105 @@
             id="password" 
             formControlName="password"
             [ngClass]="{
-              'border-red-500': f['password'].invalid && (f['password'].dirty || f['password'].touched),
-              'border-green-500': f['password'].valid && f['password'].touched
+              'border-red-300 focus:border-red-500 focus:ring-red-500': f['password'].invalid && (f['password'].dirty || f['password'].touched),
+              'border-gray-300 focus:border-blue-500 focus:ring-blue-500': !(f['password'].invalid && (f['password'].dirty || f['password'].touched))
             }"
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition-all text-gray-900 placeholder-gray-400"
             placeholder="••••••••">
-          <div *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" 
-               class="text-red-500 text-xs mt-1 ml-1">
-            Mot de passe requis
-          </div>
+          <p *ngIf="f['password'].invalid && (f['password'].dirty || f['password'].touched)" 
+             class="text-red-500 text-sm mt-1.5">
+            Le mot de passe est requis
+          </p>
         </div>
-  
+
         <!-- Message d'erreur -->
-        <div *ngIf="error" class="bg-red-50 text-red-600 p-3 rounded-lg text-sm flex items-center">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div *ngIf="error" 
+             class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm flex items-start">
+          <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
           </svg>
-          {{ error }}
+          <span>{{ error }}</span>
         </div>
-  
+
         <!-- Bouton de connexion -->
         <button 
           type="submit" 
           [disabled]="loading || loginForm.invalid"
-          class="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-all duration-300
-                 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center">
-          <svg *ngIf="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          class="w-full py-3.5 px-4 bg-primary text-white font-medium rounded-lg transition-all duration-200 shadow-lg
+                 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none flex justify-center items-center">
+          <svg *ngIf="loading" 
+               class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" 
+               xmlns="http://www.w3.org/2000/svg" 
+               fill="none" 
+               viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
           {{ loading ? 'Connexion en cours...' : 'Se connecter' }}
         </button>
       </form>
-  
+
       <!-- Lien vers l'inscription -->
-      <!-- <div class="mt-6 text-center text-sm text-gray-500">
-        Pas encore de compte ? <a routerLink="/register" class="text-indigo-600 hover:text-indigo-800 font-medium">Créer un compte</a>
-      </div> -->
+      <div class="mt-8 text-center">
+        <p class="text-sm text-gray-600">
+          Pas encore de compte ? 
+          <a routerLink="/register" class="text-blue-600 hover:text-blue-800 font-medium transition-colors ml-1">
+            Créer un compte
+          </a>
+        </p>
+      </div>
     </div>
   </div>
+
+  <!-- Section droite - Image/Branding -->
+  <div class="hidden lg:flex lg:w-1/2 bg-primary items-center justify-center p-12 relative overflow-hidden">
+    <!-- Décoration de fond -->
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+      <div class="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="relative z-10 text-white max-w-lg text-center">
+      <div class="mb-8">
+        <div class="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
+          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+          </svg>
+        </div>
+        <h2 class="text-4xl font-bold mb-4">Gérez votre stock en toute simplicité</h2>
+        <p class="text-blue-100 text-lg leading-relaxed">
+          Accédez à votre inventaire, suivez vos mouvements de stock et recevez des alertes en temps réel.
+        </p>
+      </div>
+
+      <!-- Points forts -->
+      <div class="space-y-4 mt-12">
+        <div class="flex items-center text-left bg-white/5 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <span class="text-blue-50">Suivi en temps réel de votre stock</span>
+        </div>
+        <div class="flex items-center text-left bg-white/5 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <span class="text-blue-50">Alertes automatiques de réapprovisionnement</span>
+        </div>
+        <div class="flex items-center text-left bg-white/5 backdrop-blur-sm rounded-lg p-4">
+          <div class="flex-shrink-0 w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center mr-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+          </div>
+          <span class="text-blue-50">Rapports détaillés et analyses</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -25,8 +25,8 @@ export const routes: Routes = [
   {
     path: "dashboard",
     component: DashboardComponent,
-    // canActivate: [AuthGuard, RoleGuard],
-    // data: { forbiddenRoles: ['ROLE_CUISINIER', 'ROLE_SERVEUR'] }
+    canActivate: [AuthGuard, RoleGuard],
+    data: { forbiddenRoles: ['ROLE_GESTIONNAIRE_STOCK', 'ROLE_USER'] }
   },
   
   // Commandes page - accessible to SERVEUR and ADMIN
