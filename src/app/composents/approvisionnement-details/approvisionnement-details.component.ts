@@ -1,6 +1,10 @@
 // approvisionnement-details.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { Approvisionnement, ApproProduit, ApprovisionnementService } from '../../services/approvisionnement.service';
+import {
+  Approvisionnement,
+  ApproProduit,
+  ApprovisionnementService,
+} from '../../services/approvisionnement.service';
 import { StatutValidationService } from '../../services/statut-validation.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +28,7 @@ interface StatutConfig {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './approvisionnement-details.component.html',
-  styleUrls: ['./approvisionnement-details.component.css']
+  styleUrls: ['./approvisionnement-details.component.css'],
 })
 export class ApprovisionnementDetailsComponent {
   @Input() approvisionnement: Approvisionnement | null = null;
@@ -39,64 +43,115 @@ export class ApprovisionnementDetailsComponent {
 
   // Configuration des statuts et actions
   private statutsConfig: { [key: string]: StatutConfig } = {
-    'EN_ATTENTE': {
+    EN_ATTENTE: {
       label: 'En attente',
       color: 'bg-yellow-100 text-yellow-800 border-yellow-300',
       actions: [
-        { type: 'CONFIRMER', label: 'Confirmer la commande', nextStatut: 'CONFIRME', color: 'bg-green-500 hover:bg-green-600' },
-        { type: 'ANNULER', label: 'Annuler', nextStatut: 'ANNULE', color: 'bg-red-500 hover:bg-red-600' }
-      ]
+        {
+          type: 'CONFIRMER',
+          label: 'Confirmer la commande',
+          nextStatut: 'CONFIRME',
+          color: 'bg-green-500 hover:bg-green-600',
+        },
+        {
+          type: 'ANNULER',
+          label: 'Annuler',
+          nextStatut: 'ANNULE',
+          color: 'bg-red-500 hover:bg-red-600',
+        },
+      ],
     },
-    'CONFIRME': {
+    CONFIRME: {
       label: 'Confirmé',
       color: 'bg-blue-100 text-blue-800 border-blue-300',
       actions: [
-        { type: 'EXPEDIER', label: 'Marquer comme expédié', nextStatut: 'EXPEDIE', color: 'bg-purple-500 hover:bg-purple-600' },
-        { type: 'ANNULER', label: 'Annuler', nextStatut: 'ANNULE', color: 'bg-red-500 hover:bg-red-600' }
-      ]
+        {
+          type: 'EXPEDIER',
+          label: 'Marquer comme expédié',
+          nextStatut: 'EXPEDIE',
+          color: 'bg-purple-500 hover:bg-purple-600',
+        },
+        {
+          type: 'ANNULER',
+          label: 'Annuler',
+          nextStatut: 'ANNULE',
+          color: 'bg-red-500 hover:bg-red-600',
+        },
+      ],
     },
-    'EXPEDIE': {
+    EXPEDIE: {
       label: 'Expédié',
       color: 'bg-purple-100 text-purple-800 border-purple-300',
       actions: [
-        { type: 'LIVRER_PARTIELLEMENT', label: 'Livraison partielle', nextStatut: 'LIVRE_PARTIELLEMENT', color: 'bg-orange-500 hover:bg-orange-600', needsQuantityInput: true },
-        { type: 'LIVRER_COMPLETEMENT', label: 'Livraison complète', nextStatut: 'LIVRE_COMPLETEMENT', color: 'bg-green-500 hover:bg-green-600', needsQuantityInput: true },
-        { type: 'ANNULER', label: 'Annuler', nextStatut: 'ANNULE', color: 'bg-red-500 hover:bg-red-600' }
-      ]
+        {
+          type: 'LIVRER_PARTIELLEMENT',
+          label: 'Livraison partielle',
+          nextStatut: 'LIVRE_PARTIELLEMENT',
+          color: 'bg-orange-500 hover:bg-orange-600',
+          needsQuantityInput: true,
+        },
+        {
+          type: 'LIVRER_COMPLETEMENT',
+          label: 'Livraison complète',
+          nextStatut: 'LIVRE_COMPLETEMENT',
+          color: 'bg-green-500 hover:bg-green-600',
+          needsQuantityInput: true,
+        },
+        {
+          type: 'ANNULER',
+          label: 'Annuler',
+          nextStatut: 'ANNULE',
+          color: 'bg-red-500 hover:bg-red-600',
+        },
+      ],
     },
-    'LIVRE_PARTIELLEMENT': {
+    LIVRE_PARTIELLEMENT: {
       label: 'Livré partiellement',
       color: 'bg-orange-100 text-orange-800 border-orange-300',
       actions: [
-        { type: 'LIVRER_COMPLETEMENT', label: 'Compléter la livraison', nextStatut: 'LIVRE_COMPLETEMENT', color: 'bg-green-500 hover:bg-green-600', needsQuantityInput: true },
-        { type: 'ANNULER', label: 'Annuler', nextStatut: 'ANNULE', color: 'bg-red-500 hover:bg-red-600' }
-      ]
+        {
+          type: 'LIVRER_COMPLETEMENT',
+          label: 'Compléter la livraison',
+          nextStatut: 'LIVRE_COMPLETEMENT',
+          color: 'bg-green-500 hover:bg-green-600',
+          needsQuantityInput: true,
+        },
+        {
+          type: 'ANNULER',
+          label: 'Annuler',
+          nextStatut: 'ANNULE',
+          color: 'bg-red-500 hover:bg-red-600',
+        },
+      ],
     },
-    'LIVRE_COMPLETEMENT': {
+    LIVRE_COMPLETEMENT: {
       label: 'Livré complètement',
       color: 'bg-green-100 text-green-800 border-green-300',
-      actions: []
+      actions: [],
     },
-    'ANNULE': {
+    ANNULE: {
       label: 'Annulé',
       color: 'bg-red-100 text-red-800 border-red-300',
-      actions: []
-    }
+      actions: [],
+    },
   };
 
   constructor(private approvisionnementService: ApprovisionnementService) {}
 
   getApprovisionnementProduits(appro: Approvisionnement | null): any[] {
     if (!appro) return [];
-    
+
     if (appro.produits && Array.isArray(appro.produits)) {
       return appro.produits;
     }
-    
-    if ((appro as any).approvisionnementProduits && Array.isArray((appro as any).approvisionnementProduits)) {
+
+    if (
+      (appro as any).approvisionnementProduits &&
+      Array.isArray((appro as any).approvisionnementProduits)
+    ) {
       return (appro as any).approvisionnementProduits;
     }
-    
+
     return [];
   }
 
@@ -120,6 +175,7 @@ export class ApprovisionnementDetailsComponent {
 
     if (action.needsQuantityInput) {
       this.initializeQuantityForm();
+      this.showModal = false;
       this.showQuantityModal = true;
     } else {
       this.executeAction(action);
@@ -129,11 +185,12 @@ export class ApprovisionnementDetailsComponent {
   private initializeQuantityForm() {
     this.quantitiesForm = {};
     const produits = this.getApprovisionnementProduits(this.approvisionnement);
-    
-    produits.forEach(produit => {
+
+    produits.forEach((produit) => {
       if (this.selectedAction?.type === 'LIVRER_COMPLETEMENT') {
         // Pour livraison complète, pré-remplir avec la quantité restante à livrer
-        const quantiteRestante = produit.quantiteCommandee - (produit.quantiteLivree || 0);
+        const quantiteRestante =
+          produit.quantiteCommandee - (produit.quantiteLivree || 0);
         this.quantitiesForm[produit.produit.id] = quantiteRestante;
       } else {
         // Pour livraison partielle, commencer à 0
@@ -151,31 +208,38 @@ export class ApprovisionnementDetailsComponent {
     const updateData: any = {
       fournisseurId: this.approvisionnement.fournisseur.id,
       statut: action.nextStatut,
-      dateLivraisonEffective: (action.nextStatut === 'LIVRE_COMPLETEMENT' || action.nextStatut === 'LIVRE_PARTIELLEMENT') 
-        ? new Date().toISOString() : undefined,
-      produits: this.getApprovisionnementProduits(this.approvisionnement).map(produit => ({
-        produitId: produit.produit.id,
-        quantiteCommandee: produit.quantiteCommandee,
-        quantiteLivree: quantities ? 
-          (quantities[produit.produit.id] || produit.quantiteLivree || 0) : 
-          (produit.quantiteLivree || 0),
-        prixUnitaire: produit.prixUnitaire
-      }))
+      dateLivraisonEffective:
+        action.nextStatut === 'LIVRE_COMPLETEMENT' ||
+        action.nextStatut === 'LIVRE_PARTIELLEMENT'
+          ? new Date().toISOString()
+          : undefined,
+      produits: this.getApprovisionnementProduits(this.approvisionnement).map(
+        (produit) => ({
+          produitId: produit.produit.id,
+          quantiteCommandee: produit.quantiteCommandee,
+          quantiteLivree: quantities
+            ? quantities[produit.produit.id] || produit.quantiteLivree || 0
+            : produit.quantiteLivree || 0,
+          prixUnitaire: produit.prixUnitaire,
+        }),
+      ),
     };
 
-    this.approvisionnementService.updateApprovisionnement(this.approvisionnement.id, updateData)
+    this.approvisionnementService
+      .updateApprovisionnement(this.approvisionnement.id, updateData)
       .subscribe({
         next: (updatedApprovisionnement) => {
           this.approvisionnement = updatedApprovisionnement;
           this.approvisionnementUpdated.emit(updatedApprovisionnement);
           this.isLoading = false;
           this.showQuantityModal = false;
+          this.showModal = true; // ← réaffiche les détails mis à jour
           this.selectedAction = null;
         },
         error: (error) => {
           console.error('Erreur lors de la mise à jour:', error);
           this.isLoading = false;
-        }
+        },
       });
   }
 
@@ -187,6 +251,7 @@ export class ApprovisionnementDetailsComponent {
 
   cancelQuantityAction() {
     this.showQuantityModal = false;
+    this.showModal = true; // ← réouvre le premier modal si annulation
     this.selectedAction = null;
     this.quantitiesForm = {};
   }
@@ -200,12 +265,15 @@ export class ApprovisionnementDetailsComponent {
   }
 
   getTotalQuantityToDeliver(): number {
-    return Object.values(this.quantitiesForm).reduce((sum, qty) => sum + (qty || 0), 0);
+    return Object.values(this.quantitiesForm).reduce(
+      (sum, qty) => sum + (qty || 0),
+      0,
+    );
   }
 
   isQuantityValid(): boolean {
     const produits = this.getApprovisionnementProduits(this.approvisionnement);
-    return produits.every(produit => {
+    return produits.every((produit) => {
       const quantity = this.quantitiesForm[produit.produit.id] || 0;
       const maxQuantity = this.getMaxQuantity(produit);
       return quantity >= 0 && quantity <= maxQuantity;
