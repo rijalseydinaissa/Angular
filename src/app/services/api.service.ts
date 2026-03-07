@@ -104,4 +104,13 @@ export class ApiService {
       error: error.error
     }));
   }
+  // Ajouter après la méthode uploadFile()
+  getBlob(endpoint: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/${endpoint}`, {
+      headers: this.getMultipartHeaders(), // Sans Content-Type: application/json
+      responseType: 'blob'
+    }).pipe(
+      catchError(this.handleError)
+    );
+  }
 }

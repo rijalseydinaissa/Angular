@@ -118,5 +118,28 @@ updateProduct(id: number, productData: any, imageFile: File | null): Observable<
     // Utiliser la méthode uploadFile dédiée pour les FormData
     return this.apiService.uploadFile<{url: string}>(`${this.endpoint}/${productId}/image`, formData);
   }
+  // ✅ Export CSV
+exportCsv(): Observable<Blob> {
+  return this.apiService.getBlob(`${this.endpoint}/export/csv`);
+}
+
+// ✅ Import CSV
+importCsv(file: File): Observable<any> {
+  const formData = new FormData();
+  formData.append('file', file);
+  return this.apiService.uploadFile<any>(`${this.endpoint}/import/csv`, formData).pipe(
+    tap(() => this.loadProducts()) // Recharger la liste après import
+  );
+}
+
+// ✅ Rapport PDF inventaire
+downloadInventairePdf(): Observable<Blob> {
+  return this.apiService.getBlob(`${this.endpoint}/rapport/inventaire`);
+}
+
+// ✅ Rapport PDF alertes
+downloadAlertesPdf(): Observable<Blob> {
+  return this.apiService.getBlob(`${this.endpoint}/rapport/alertes`);
+}
 }
 
