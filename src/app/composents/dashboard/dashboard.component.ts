@@ -389,9 +389,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
              console.log('derniersApprovisionnements:', data.derniersApprovisionnements); // ← ici
 
           this.updateStats(data);
-          this.plusVendues = data.produitsPlusSortis;
-          this.bientotTermine = data.produitsEnAlerte;
-          this.approvisionnements = data.derniersApprovisionnements;
+          this.plusVendues = data.produitsPlusSortis.slice(0, 4);
+          this.bientotTermine = data.produitsEnAlerte.slice(0, 4);
+          this.approvisionnements = data.derniersApprovisionnements.slice(0, 7);
           this.isLoading = false;
         },
         error: (err) => {

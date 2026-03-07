@@ -23,7 +23,7 @@ export class LoginComponent {
   ) {
     // Rediriger si déjà connecté
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/commandes']);
+      this.router.navigate(['/produit']);
     }
 
     this.loginForm = this.formBuilder.group({
@@ -45,7 +45,7 @@ export class LoginComponent {
     this.authService.login(this.f['email'].value, this.f['password'].value)
       .subscribe({
         next: () => {
-          this.router.navigate(['/commandes']);
+          this.router.navigate(['/produit']);
         },
         error: error => {
           this.error = 'Email ou mot de passe incorrect';
