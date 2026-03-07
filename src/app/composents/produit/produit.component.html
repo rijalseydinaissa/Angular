@@ -185,7 +185,7 @@
                   class="product-avatar product-avatar-img"
                 />
                 <div *ngIf="!product?.image" class="product-avatar product-avatar-initials">
-                  {{ product.nom?.charAt(0)?.toUpperCase() }}
+                  {{ product.nom.charAt(0).toUpperCase() }}
                 </div>
                 <span class="product-name">{{ product.nom }}</span>
               </div>
@@ -215,7 +215,7 @@
 
             <!-- Catégorie -->
             <td>
-              <span class="cat-pill">{{ product.categorie?.nom }}</span>
+              <span class="cat-pill">{{ product.categorie.nom }}</span>
             </td>
 
             <!-- Statut -->
